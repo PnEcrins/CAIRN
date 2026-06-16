@@ -72,7 +72,7 @@ Pour un accès réseau ou un partage temporaire, voir la section
 
 | Modèle | Description | Source / article | Téléchargement des poids |
 |---|---|---|---|
-| **YOLO26** (fine-tuné ) | Détecteur rapide et léger, spécialisé sur les classes `baigneur` / `tente`. Tiling optionnel via SAHI. | [Documentation Ultralytics](https://docs.ultralytics.com/models/yolo26#overview) | Poids fine-tunés versionnés via Git LFS (`crowdshore/gradio/models/weights/`) ; poids COCO de base téléchargés automatiquement par Ultralytics |
+| **YOLO26** (fine-tuné ) | Détecteur rapide et léger, spécialisé sur les classes `baigneur` / `tente`. Tiling optionnel via SAHI. | [Documentation Ultralytics](https://docs.ultralytics.com/models/yolo26#overview) | Poids fine-tunés versionnés via Git LFS (`timelapse-frequentation/App_web/models/weights/`) à partir d'un modèle pré-entraîné sur le dataset COCO |
 | **SAM3** (Segment Anything Model 3) | Modèle de segmentation/détection par concept (texte), classes prédéfinies ou prompt libre. Ajout d'une fonctionnalité de tilling. | [SAM 3 — docs Ultralytics](https://docs.ultralytics.com/models/sam-3/) | Accès sur demande puis téléchargement manuel via la [page Hugging Face facebook/sam3](https://huggingface.co/facebook/sam3) (fichier `sam3.pt`) |
 
 ➡️ Détails (classes, mapping, tiling, licences) : [`docs/modeles.md`](docs/modeles.md).
