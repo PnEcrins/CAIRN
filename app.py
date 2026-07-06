@@ -31,6 +31,7 @@ from preprocessor import preprocess_images
 from models.yolo import YoloModel
 from models.sam3 import SAM3Model
 from exporter import export_to_csv
+from config import Config
 
 # ── Importation sécurisée du script OFB ───────────────────────────────────────
 HAS_OFB_SCRIPT = False

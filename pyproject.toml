@@ -8,7 +8,8 @@ dependencies = [
     "pandas>=2.0.0",
     "Pillow>=10.0.0",
     "ultralytics>=8.0.0",
-    "sahi>=0.11.14"
+    "sahi>=0.11.14",
+    "marshmallow>=4.3.0",
 ]
 requires-python = ">= 3.10"
 authors = [
@@ -19,3 +20,6 @@ keywords = ["image recognition", "object detection"]
 
 [tool.setuptools.dynamic]
 version = { file = ["VERSION"] }
+
+[tool.black]
+line-length = 99
