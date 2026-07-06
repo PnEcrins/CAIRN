@@ -419,7 +419,11 @@ def classification(
 def arrondir_date(dt, periode, tz):
     try:
         # Perform the operation with the specified period
-        date = pd.Timestamp(dt).to_period(periode.lower() if isinstance(periode, str) else periode).to_timestamp()
+        date = (
+            pd.Timestamp(dt)
+            .to_period(periode.lower() if isinstance(periode, str) else periode)
+            .to_timestamp()
+        )
     except:  # To avoid a bug, we define the default time step as hour
         print("Error reading value for time_step from config file. Set to basic value, hour.")
         # Perform the operation with the pediod in hours
@@ -598,7 +602,9 @@ def FtpClassification(
         )
         result_pose = DefSkelPoints(predict_pose)
         if blur:
-            blur_Image_and_Replace(predict_pose, os.path.normpath(os.path.join(local_folder, "blur")))
+            blur_Image_and_Replace(
+                predict_pose, os.path.normpath(os.path.join(local_folder, "blur"))
+            )
 
         if format:  # True = time format | False = image format
             date = datetime.strptime(
@@ -671,13 +677,9 @@ def BrowseFTP(
                             save_crop,
                         )
                     )
-                    print(
-                        "\r", pourcentage, "% [-- ]", end="", flush=True
-                    )  # Process position bar
+                    print("\r", pourcentage, "% [-- ]", end="", flush=True)  # Process position bar
                     os.remove(image)
-                    print(
-                        "\r", pourcentage, "% [---]", end="", flush=True
-                    )  # Process position bar
+                    print("\r", pourcentage, "% [---]", end="", flush=True)  # Process position bar
             elif not os.path.isfile(element):
                 results.extend(
                     BrowseFTP(
@@ -1040,9 +1042,7 @@ def main(config_file_path="./config.yaml", extention="csv"):
     file_prefix = config["ftp_directory"] if config["ftp_server"] != "" else local_folder
     file_prefix = file_prefix.replace("/", "_")
     filename = os.path.normpath(
-        os.path.join(
-            output_folder, file_prefix + "_" + timestr + "." + extention
-        )
+        os.path.join(output_folder, file_prefix + "_" + timestr + "." + extention)
     )
 
     # Save our results
