@@ -1,0 +1,8 @@
+services:
+  app:
+    image: timelapse-frequentation:latest # ghcr.io/pnecrins/timelapse-frequentation
+    ports:
+      - "80:7860"
+    volumes:
+      - ./model_weights:/app/model_weights
+      - ./config.yaml:/app/config.yaml
