@@ -9,9 +9,10 @@ from dataclasses import dataclass, field
 @dataclass
 class Detection:
     """Un objet détecté dans une image."""
+
     image_name: str
-    label: str          # ex: "baigneur", "tente"
-    bbox: list[float]   # [x1, y1, x2, y2] en pixels
+    label: str  # ex: "baigneur", "tente"
+    bbox: list[float]  # [x1, y1, x2, y2] en pixels
     confidence: float
     year: int | None
     month: int | None

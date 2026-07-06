@@ -2,7 +2,7 @@ ui:
   title: "Détection et comptage automatique"
   theme_color: "#981d97"
   page_threshold: 100
-  show_visualization: true  # Permet d'afficher ou de masquer tout le panneau de droite (tableaux et images)
+  show_visualization: true # Permet d'afficher ou de masquer tout le panneau de droite (tableaux et images)
   logos:
     top_left_1: "logo_ecrins.png"
     top_left_2: "logo_lacs.png"
@@ -13,16 +13,19 @@ models:
   available:
     - YOLO
     - SAM3
-  device: "cpu"  # "cuda" pour utiliser la carte graphique, "cpu" pour utiliser le processeur
+  device: "cpu" # "cuda" pour utiliser la carte graphique, "cpu" pour utiliser le processeur
   default_confidence: 0.4
-  show_confidence_slider: true  # Permet de masquer le slider de confiance (utilisera la valeur par défaut)
+  show_confidence_slider: true # Permet de masquer le slider de confiance (utilisera la valeur par défaut)
   confidence_range: [0.1, 0.9]
 
 features:
-  allow_tiling: true  # Permet de masquer entièrement l'option de Tiling si configuré sur false
+  allow_tiling: true # Permet de masquer entièrement l'option de Tiling si configuré sur false
   classes:
     - tente
     - baigneur
+  model_path:
+    YOLO: "model_weights/YOLO26_300epochs_tentes_10freeze.pt"
+    SAM3: "model_weights/sam3.pt"
 
 ofb_attendance:
   ftp_server: ""

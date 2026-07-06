@@ -1,2 +1,0 @@
-YOLO_MODEL_FILEPATH = "model_weights/YOLO26_300epochs_tentes_10freeze.pt"
-SAM3_MODEL_FILEPATH = "model_weights/sam3.pt"
