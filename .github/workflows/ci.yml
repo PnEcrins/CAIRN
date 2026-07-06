@@ -1,6 +1,8 @@
 name: Check install and app launch
 on:
     push:
+        branches:
+            - main
     pull_request:
 jobs:
     uv-example:
