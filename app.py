@@ -37,10 +37,10 @@ def _logo_b64(path):
     except FileNotFoundError:
         return ""
 
-LOGO_biodiv = _logo_b64(os.path.join(ABS_DIR, "BiodivTourAlps_logo_def.png"))
-LOGO_ecrin  = _logo_b64(os.path.join(ABS_DIR, "logo_ecrins.png"))
-LOGO_leca   = _logo_b64(os.path.join(ABS_DIR, "logo_leca.png"))
-LOGO_lacs   = _logo_b64(os.path.join(ABS_DIR, "logo_lacs.png"))
+LOGO_biodiv = _logo_b64(os.path.join(ABS_DIR, "docs/images/BiodivTourAlps_logo_def.png"))
+LOGO_ecrin  = _logo_b64(os.path.join(ABS_DIR, "docs/images/logo_ecrins.png"))
+LOGO_leca   = _logo_b64(os.path.join(ABS_DIR, "docs/images/logo_leca.png"))
+LOGO_lacs   = _logo_b64(os.path.join(ABS_DIR, "docs/images/logo_lacs.png"))
 
 def _logo_img(src, alt, h=60):
     return f'<img src="{src}" alt="{alt}" style="height:{h}px; width:auto; display:inline-block; vertical-align:middle; pointer-events:none; user-select:none;" draggable="false">'
