@@ -17,27 +17,27 @@ try:
 except ImportError:
     SAHI_AVAILABLE = False
 
-# Mapping labels COCO 
-LABEL_MAP = {
-    "person":   "baigneur",
-    "umbrella": "tente",
-}
-DEFAULT_MODEL = "yolov8n.pt"
-
+DEFAULT_MODEL = "last.pt"
 
 class YoloModel(BaseModel):
 
-    def __init__(self, model_path: str = DEFAULT_MODEL, conf: float = 0.4):
+    def __init__(self, model_path: str = DEFAULT_MODEL, conf: float = 0.4, device: str = "cpu"):
         self.conf       = conf
         self.model_path = model_path
         self.model      = YOLO(model_path)
+        self.device     = device
 
         # Modèle SAHI 
         if SAHI_AVAILABLE:
+            # On extrait les classes directement depuis le modèle YOLO chargé
+            cat_mapping = {str(k): str(v) for k, v in self.model.names.items()}
+            
             self.sahi_model = AutoDetectionModel.from_pretrained(
                 model_type="ultralytics",
                 model_path=model_path,
                 confidence_threshold=conf,
+                device=self.device,
+                category_mapping=cat_mapping
             )
         else:
             self.sahi_model = None
@@ -55,13 +55,15 @@ class YoloModel(BaseModel):
         detections = []
         for result in results:
             for box in result.boxes:
-                raw_label  = result.names[int(box.cls)]
-                mapped     = LABEL_MAP.get(raw_label, raw_label)
-                if mapped not in targets:
+                label = result.names[int(box.cls)]
+                
+                # Le modèle renvoyant les bons noms, on vérifie directement la cible
+                if label not in targets:
                     continue
+                
                 x1, y1, x2, y2 = box.xyxy[0].tolist()
                 detections.append(Detection(
-                    image_name=Path(image_path).name, label=mapped,
+                    image_name=Path(image_path).name, label=label,
                     bbox=[round(x1,1), round(y1,1), round(x2,1), round(y2,1)],
                     confidence=round(float(box.conf), 3),
                     year=None, month=None, day=None, hour=None,
@@ -84,14 +86,23 @@ class YoloModel(BaseModel):
         )
         detections = []
         for obj in result.object_prediction_list:
-            mapped = LABEL_MAP.get(obj.category.name, obj.category.name)
-            if mapped not in targets:
+            label = obj.category.name
+            
+            # Pareil ici, obj.category.name contient directement le bon label grâce au category_mapping
+            if label not in targets:
                 continue
+                
             b = obj.bbox
             detections.append(Detection(
-                image_name=Path(image_path).name, label=mapped,
-                bbox=[round(b.minx,1), round(b.miny,1), round(b.maxx,1), round(b.maxy,1)],
-                confidence=round(obj.score.value, 3),
+                image_name=Path(image_path).name, label=label,
+                # On force la conversion en float classique Python avant d'arrondir
+                bbox=[
+                    round(float(b.minx), 1), 
+                    round(float(b.miny), 1), 
+                    round(float(b.maxx), 1), 
+                    round(float(b.maxy), 1)
+                ],
+                confidence=round(float(obj.score.value), 3),
                 year=None, month=None, day=None, hour=None,
             ))
         return detections
