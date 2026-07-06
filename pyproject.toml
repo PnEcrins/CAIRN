@@ -10,6 +10,9 @@ dependencies = [
     "ultralytics>=8.0.0",
     "sahi>=0.11.14",
     "marshmallow>=4.3.0",
+    "pyyaml>=6.0.3",
+    "validators>=0.35.0",
+    "pyexiftool>=0.5.6",
 ]
 requires-python = ">= 3.10"
 authors = [
