@@ -34,39 +34,58 @@ L'interface permet de :
 - [Git LFS](https://git-lfs.com/) (images d'exemple et poids du modèle YOLO entraîné)
 - GPU CUDA recommandé pour SAM3
 
-### Installation rapide
+
+### Cloner le dépôt et récupérer les poids du modèle YOLO
 
 ```bash
 git lfs install
 git clone https://github.com/PnEcrins/timelapse-frequentation/App_web.git
 cd timelapse-frequentation
 git lfs pull
+```
 
+### Créer un fichier de configuration `config.yaml` (exemple minimal) :
+
+```bash
+cp config.yaml.example config.yaml
+```
+
+### Lancer l'application en local (hors Docker)
+
+#### Créer un environnement virtuel et installer les dépendances
+```bash
 python -m venv .venv
 source .venv/bin/activate   # Windows : .venv\Scripts\activate
 
-pip install -e .
+pip install .
+# ou uv sync
 ```
 
-### Lancer l'application
+#### Lancer l'application
 
 ```bash
-cd timelapse-frequentation/App_web
 python app.py
 ```
+L'application est servie en local par défaut sur http://127.0.0.1:7860
 
-### Accéder à l'interface
 
-L'application est servie en local par défaut sur :
 
+
+### Installation via Docker
+
+```bash
+docker-compose up -d
 ```
-http://127.0.0.1:7860
-```
 
-Pour un accès réseau ou un partage temporaire, voir la section
-*« Accéder à l'interface »* de [`docs/installation.md`](docs/installation.md).
+ou via l'image Docker officielle (GitHub Container Registry) :
+
+```bash
+docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name timelapse-frequentation ghcr.io/pnecrins/timelapse-frequentation:latest
+```
 
 ➡️ Guide pas-à-pas de l'interface : [`docs/guide_utilisateur.md`](docs/guide_utilisateur.md).
+
+
 
 ## 🧠 Modèles disponibles
 
@@ -76,6 +95,23 @@ Pour un accès réseau ou un partage temporaire, voir la section
 | **SAM3** (Segment Anything Model 3) | Modèle de segmentation/détection par concept (texte), classes prédéfinies ou prompt libre. Ajout d'une fonctionnalité de tilling. | [SAM 3 — docs Ultralytics](https://docs.ultralytics.com/models/sam-3/) | Accès sur demande puis téléchargement manuel via la [page Hugging Face facebook/sam3](https://huggingface.co/facebook/sam3) (fichier `sam3.pt`) |
 
 ➡️ Détails (classes, mapping, tiling, licences) : [`docs/modeles.md`](docs/modeles.md).
+
+
+### Installation du modèle SAM3
+
+SAM3 est un modèle propriétaire (licence non commerciale) et n'est pas inclus dans le dépôt. Pour l'utiliser, il faut :
+1. Créer un compte sur [Hugging Face](https://huggingface.co/).
+2. Accepter les conditions d'utilisation du modèle SAM3 (licence non commerciale).
+3. Télécharger le fichier `sam3.pt` depuis la page [facebook/sam3](https://huggingface.co/facebook/sam3).
+4. Placer le fichier `sam3.pt` dans le dossier `timelapse-frequentation/App_web/model_weights/`.
+
+
+> [!NOTE]
+> Pour les utilisateurs de Docker, il est nécessaire de monter le fichier `sam3.pt` dans le conteneur via un volume Docker (voir exemple dans `docker-compose.yml`) ou d'exécuter la commande docker suivante avec le volume approprié :
+
+```bash
+docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml -v ./model_weights/sam3.pt:/app/model_weights/sam3.pt --name timelapse-frequentation ghcr.io/pnecrins/timelapse-frequentation:latest
+``` 
 
 ## 🎨 Paramètres
 
