@@ -19,11 +19,12 @@ TILE_OVERLAP   = 50
 
 class SAM3Model(BaseModel):
 
-    def __init__(self, model_path: str = DEFAULT_MODEL, conf: float = 0.4):
+    def __init__(self, model_path: str = DEFAULT_MODEL, conf: float = 0.4, device: str = "cpu"):
         self.conf = conf
         overrides = dict(
             conf=conf, task="segment", mode="predict",
             model=model_path, half=False, save=False, verbose=False,
+            device=device
         )
         self.predictor = SAM3SemanticPredictor(overrides=overrides)
 
@@ -48,6 +49,18 @@ class SAM3Model(BaseModel):
                     year=None, month=None, day=None, hour=None,
                 ))
         return detections
+    
+    def __del__(self):
+        try:
+            del self.predictor
+        except Exception:
+            pass
+        try:
+            import torch
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+        except Exception:
+            pass
 
     # ── mode pleine image ──────────────────────────────────────────────────────
 
