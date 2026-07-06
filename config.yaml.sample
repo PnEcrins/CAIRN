@@ -24,7 +24,7 @@ features:
     - tente
     - baigneur
   model_path:
-    YOLO: "model_weights/YOLO26_300epochs_tentes_10freeze.pt"
+    YOLO: "model_weights/YOLO26_300epochs_tentes+baigneurs_10freeze.pt"
     SAM3: "model_weights/sam3.pt"
 
 ofb_attendance:
