@@ -9,6 +9,8 @@ jobs:
 
         steps:
             - uses: actions/checkout@v7
+              with:
+                  lfs: true
 
             - name: Install uv
               uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
@@ -17,6 +19,9 @@ jobs:
               run: uv python install
             - name: Install dependencies
               run: uv sync
+            - name: Create config file
+              run: |
+                  cp config.yaml.sample config.yaml
             - name: Run the APP
               run: |
                   timeout 30 uv run app.py &
