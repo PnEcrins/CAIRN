@@ -84,10 +84,12 @@ def preprocess_images(image_paths: list[str]) -> list[dict]:
         if dt is None:
             generic_counter += 1
 
-        results.append({
-            "original_path": path,
-            "output_name": name,
-            "datetime": dt,
-        })
+        results.append(
+            {
+                "original_path": path,
+                "output_name": name,
+                "datetime": dt,
+            }
+        )
 
     return results

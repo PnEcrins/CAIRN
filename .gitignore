@@ -208,3 +208,4 @@ __marimo__/
 
 #fichier de poids des modèles
 *.pt
+config.yaml
