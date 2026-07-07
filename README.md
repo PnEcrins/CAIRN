@@ -10,18 +10,18 @@ Elle permet d'analyser des séries d'images (issues de caméras
 automatiquement les **baigneurs**, les **tentes** ou autre classes relatives à la fréquentation, à l'aide de modèles
 de vision par ordinateur (YOLO, SAM3).
 
-## 📸 Introduction
 
 ![Interface CrowdShore](docs/images/screenshot_app.png)
 
 L'interface permet de :
-- importer un lot d'images,
-- choisir un modèle de détection (YOLO ou SAM3),
-- choisir les classes à détecter(tente ou baigneur pour Yolo (entrainé dessus), n'importe quel prompt textuel pour SAM3)
-- adapater si on le souhaite les paramètres de smodèles (seuil de confiance + tilling)
-- lancer l'analyse et consulter un tableau de résultats par image,
-- visualiser les détections (bounding boxes) sur chaque image,
-- exporter l'ensemble des résultats au format CSV.
+- 📥 **Importer** un lot d'images à analyser
+- 🤖 **Choisir** un modèle de détection (YOLO ou SAM3)
+- ✅ **Sélectionner** les classes à détecter (tente ou baigneur pour YOLO, prompt libre pour SAM3)
+- ⚙️ **Ajuster** les paramètres du modèle (seuil de confiance et tiling optionnel)
+- ▶️ **Lancer** l'analyse et consulter les résultats dans un tableau détaillé par image
+- 👁️ **Visualiser** les détections (bounding boxes) directement sur les images
+- 📤 **Exporter** l'ensemble des résultats au format CSV
+
 
 ➡️ Documentation utilisateur complète : voir
 [`docs/guide_utilisateur.md`](docs/guide_utilisateur.md).
@@ -50,6 +50,8 @@ git lfs pull
 cp config.yaml.example config.yaml
 ```
 
+Plus d'informations sur la configuration : [`docs/guide_admin.md`](docs/guide_admin.md).
+
 ### Lancer l'application en local (hors Docker)
 
 #### Créer un environnement virtuel et installer les dépendances
@@ -67,8 +69,6 @@ pip install .
 python app.py
 ```
 L'application est servie en local par défaut sur http://127.0.0.1:7860
-
-
 
 
 ### Installation via Docker
@@ -165,11 +165,9 @@ soumises à leurs propres licences : voir la section *Licence* de
 ## 📚 Documentation complète
 
 Toute la documentation utilisateur est disponible dans le dossier
-[`docs/`](docs/index.md) :
+[`docs/`](docs/) :
 
-- [Installation détaillée](docs/installation.md)
+
 - [Guide utilisateur](docs/guide_utilisateur.md)
-- [Modèles disponibles](docs/modeles.md)
-- [Architecture du projet](docs/architecture.md)
+- [Guide administrateur](docs/guide_admin.md)
 
-Voir aussi le [`CHANGELOG.md`](CHANGELOG.md) pour l'historique des versions.
