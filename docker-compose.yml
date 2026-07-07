@@ -1,6 +1,6 @@
 services:
   app:
-    image: timelapse-frequentation:latest # ghcr.io/pnecrins/timelapse-frequentation
+    image: ghcr.io/pnecrins/timelapse-frequentation:latest
     ports:
       - "80:7860"
     volumes:
