@@ -15,6 +15,7 @@ RUN apt-get update \
     libgl1 \
     libglib2.0-0 \
     libgomp1 \
+    libimage-exiftool-perl \
     libmagic1 \
     && rm -rf /var/lib/apt/lists/*
 
