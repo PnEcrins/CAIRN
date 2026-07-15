@@ -5,6 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     GRADIO_SERVER_NAME=0.0.0.0 \
     GRADIO_SERVER_PORT=7860
+ENV UV_LINK_MODE=copy
 
 WORKDIR /app
 
@@ -24,7 +25,8 @@ RUN pip install --no-cache-dir uv
 COPY pyproject.toml README.md VERSION ./
 COPY . ./
 
-RUN uv sync
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync
 
 EXPOSE 7860
 
