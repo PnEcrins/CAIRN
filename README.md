@@ -47,7 +47,7 @@ git lfs pull
 ### Créer un fichier de configuration `config.yaml` (exemple minimal) :
 
 ```bash
-cp config.yaml.example config.yaml
+cp config.yaml.sample config.yaml
 ```
 
 Plus d'informations sur la configuration : [`docs/guide_admin.md`](docs/guide_admin.md).
