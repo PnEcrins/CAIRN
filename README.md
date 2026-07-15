@@ -80,7 +80,7 @@ docker-compose up -d
 ou via l'image Docker officielle (GitHub Container Registry) :
 
 ```bash
-docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name cairn ghcr.io/pnecrins/CAIRN:latest
+docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name cairn ghcr.io/pnecrins/cairn:latest
 ```
 
 ➡️ Guide pas-à-pas de l'interface : [`docs/guide_utilisateur.md`](docs/guide_utilisateur.md).
@@ -110,7 +110,7 @@ SAM3 est un modèle propriétaire (licence non commerciale) et n'est pas inclus 
 > Pour les utilisateurs de Docker, il est nécessaire de monter le fichier `sam3.pt` dans le conteneur via un volume Docker (voir exemple dans `docker-compose.yml`) ou d'exécuter la commande docker suivante avec le volume approprié :
 
 ```bash
-docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml -v ./model_weights/sam3.pt:/app/model_weights/sam3.pt --name cairn ghcr.io/pnecrins/CAIRN:latest
+docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml -v ./model_weights/sam3.pt:/app/model_weights/sam3.pt --name cairn ghcr.io/pnecrins/cairn:latest
 ``` 
 
 ## 🎨 Paramètres
