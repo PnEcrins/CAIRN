@@ -103,15 +103,15 @@ HEADER_HTML = f"""
 <div style="display:flex;align-items:center;justify-content:space-between;background:#ffffff;border:1px solid #e2e4e7;border-radius:12px;padding:15px 25px;gap:12px;box-shadow:0 2px 4px rgba(0,0,0,0.05);margin-bottom:10px;">
     <div style="display:flex;gap:15px;flex-shrink:0;align-items:center;">{_logo_img(LOGO_TL1, "HG1", h=80)}{_logo_img(LOGO_TL2, "HG2", h=80)}</div>
     <h2 style="flex:1;text-align:center;margin:0;font-family:'Inter',sans-serif;font-size:1.6rem;font-weight:800;color:{config.ui.theme_color};line-height:1.2;">
-        {config.ui.title}<br><span style="font-size:1.5rem;font-weight:500;color:#6b7280;">Analyse de la fréquentation des lacs de montagne</span>
+        {config.ui.title}<br><span style="font-size:1.5rem;font-weight:500;color:#6b7280;">{config.ui.subtitle}</span>
     </h2>
     <div style="display:flex;gap:15px;flex-shrink:0;align-items:center;">{_logo_img(LOGO_TR1, "HD1", h=50)}{_logo_img(LOGO_TR2, "HD2", h=80)}</div>
 </div>
 """
 
 MODEL_INFO = {
-    "YOLO": "**YOLOv26** — Modèle spécialisé et rapide. Entrainé sur 3000 images. Meilleures performances pour détection de tentes prises de loin. \n\n*Seuil conseillé : 0.4*",
-    "SAM3": "**SAM3** — Attention ! Modèle très lourd qui nécéssite d'avoir un GPU pour tourner convenablement (plusieurs dizaines de secondes par images sinon.) Permet de détecter n'importe quoi (via l'option prompt libre ci-dessous) \n\n*Seuil conseillé : 0.4*",
+    "YOLO": "**YOLOv26** — Modèle spécialisé et rapide. Entraîné sur 3000 images. Meilleures performances pour détection de tentes prises de loin. \n\n*Seuil conseillé : 0.4*",
+    "SAM3": "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement (plusieurs dizaines de secondes par images sinon.) Permet de détecter n'importe quoi (via l'option prompt libre ci-dessous) \n\n*Seuil conseillé : 0.4*",
     "YOLOv8_Squelette": "**YOLOv8** — Modèle Yolo permettant de détecter automatiquement des personnes, leurs directions de passages, leurs activités.",
 }
 
@@ -691,4 +691,4 @@ with gr.Blocks(title=config.ui.title) as demo:
 
 if __name__ == "__main__":
     demo.queue()
-    demo.launch(theme=custom_theme, css=CUSTOM_CSS)
+    demo.launch(theme=custom_theme, css=CUSTOM_CSS, server_name="0.0.0.0", debug=True)

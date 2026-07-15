@@ -1,6 +1,6 @@
-# CrowdShore 
+# CAIRN
 
-**CrowdShore** est une application web (Gradio) de **détection et de
+**CAIRN** est une application web (Gradio) de **détection et de
 comptage automatique de la fréquentation** sur les sites naturels de
 montagne — lacs d'altitude, zones de bivouac — développée dans le cadre des
 projets **PLOUF** et **BiodivTourAlps** (Parc national des Écrins / LECA).
@@ -11,7 +11,7 @@ automatiquement les **baigneurs**, les **tentes** ou autre classes relatives à 
 de vision par ordinateur (YOLO, SAM3).
 
 
-![Interface CrowdShore](docs/images/screenshot_app.png)
+![Interface CAIRN](docs/images/screenshot_app.png)
 
 L'interface permet de :
 - 📥 **Importer** un lot d'images à analyser
@@ -39,8 +39,8 @@ L'interface permet de :
 
 ```bash
 git lfs install
-git clone https://github.com/PnEcrins/timelapse-frequentation/App_web.git
-cd timelapse-frequentation
+git clone https://github.com/PnEcrins/CAIRN.git
+cd CAIRN
 git lfs pull
 ```
 
@@ -80,7 +80,7 @@ docker-compose up -d
 ou via l'image Docker officielle (GitHub Container Registry) :
 
 ```bash
-docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name timelapse-frequentation ghcr.io/pnecrins/timelapse-frequentation:latest
+docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name cairn ghcr.io/pnecrins/CAIRN:latest
 ```
 
 ➡️ Guide pas-à-pas de l'interface : [`docs/guide_utilisateur.md`](docs/guide_utilisateur.md).
@@ -91,7 +91,7 @@ docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name timelapse-freq
 
 | Modèle | Description | Source / article | Téléchargement des poids |
 |---|---|---|---|
-| **YOLO26** (fine-tuné ) | Détecteur rapide et léger, spécialisé sur les classes `baigneur` / `tente`. Tiling optionnel via SAHI. | [Documentation Ultralytics](https://docs.ultralytics.com/models/yolo26#overview) | Poids fine-tunés versionnés via Git LFS (`timelapse-frequentation/App_web/models/weights/`) à partir d'un modèle pré-entraîné sur le dataset COCO |
+| **YOLO26** (fine-tuné ) | Détecteur rapide et léger, spécialisé sur les classes `baigneur` / `tente`. Tiling optionnel via SAHI. | [Documentation Ultralytics](https://docs.ultralytics.com/models/yolo26#overview) | Poids fine-tunés versionnés via Git LFS (`CAIRN/models/weights/`) à partir d'un modèle pré-entraîné sur le dataset COCO |
 | **SAM3** (Segment Anything Model 3) | Modèle de segmentation/détection par concept (texte), classes prédéfinies ou prompt libre. Ajout d'une fonctionnalité de tilling. | [SAM 3 — docs Ultralytics](https://docs.ultralytics.com/models/sam-3/) | Accès sur demande puis téléchargement manuel via la [page Hugging Face facebook/sam3](https://huggingface.co/facebook/sam3) (fichier `sam3.pt`) |
 
 ➡️ Détails (classes, mapping, tiling, licences) : [`docs/modeles.md`](docs/modeles.md).
@@ -103,20 +103,20 @@ SAM3 est un modèle propriétaire (licence non commerciale) et n'est pas inclus 
 1. Créer un compte sur [Hugging Face](https://huggingface.co/).
 2. Accepter les conditions d'utilisation du modèle SAM3 (licence non commerciale).
 3. Télécharger le fichier `sam3.pt` depuis la page [facebook/sam3](https://huggingface.co/facebook/sam3).
-4. Placer le fichier `sam3.pt` dans le dossier `timelapse-frequentation/App_web/model_weights/`.
+4. Placer le fichier `sam3.pt` dans le dossier `CAIRN/model_weights/`.
 
 
 > [!NOTE]
 > Pour les utilisateurs de Docker, il est nécessaire de monter le fichier `sam3.pt` dans le conteneur via un volume Docker (voir exemple dans `docker-compose.yml`) ou d'exécuter la commande docker suivante avec le volume approprié :
 
 ```bash
-docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml -v ./model_weights/sam3.pt:/app/model_weights/sam3.pt --name timelapse-frequentation ghcr.io/pnecrins/timelapse-frequentation:latest
+docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml -v ./model_weights/sam3.pt:/app/model_weights/sam3.pt --name cairn ghcr.io/pnecrins/CAIRN:latest
 ``` 
 
 ## 🎨 Paramètres
 
 L'apparence de l'application (logos, couleurs, thème, seuils par défaut)
-est centralisée en tête de `timelapse-frequentation/App_web/app.py`.
+est centralisée en tête de `CAIRN/app.py`.
 
 | Élément | Valeur |
 |---|---|

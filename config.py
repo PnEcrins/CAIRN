@@ -30,7 +30,11 @@ class LogosSchema(Schema):
 
 
 class UISchema(Schema):
-    title = fields.Str(required=False, load_default="Détection et comptage automatique")
+    title = fields.Str(required=False, load_default="CAIRN")
+    subtitle = fields.Str(
+        required=False,
+        load_default="CAractérisation par Intelligence artificielle des activités Récréatives en milieux Naturels",
+    )
     theme_color = fields.Str(required=False, load_default="#981d97")
     page_threshold = fields.Int(required=False, load_default=100)
     show_visualization = fields.Bool(required=False, load_default=True)
