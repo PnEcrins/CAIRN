@@ -1,5 +1,5 @@
 [project]
-name = "CrowdShore"
+name = "CAIRN"
 version = "0.0.1"
 license = { text = "MIT" }
 dependencies = [
