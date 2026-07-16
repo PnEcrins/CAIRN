@@ -1,0 +1,39 @@
+services:
+  traefik:
+    image: traefik:v2.11
+    restart: unless-stopped
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+
+  app:
+    image: timelapse-frequentation:latest
+    expose:
+      - "7860"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cairn.rule=Host(`${CAIRN_DOMAIN}`)"
+      - "traefik.http.routers.cairn.entrypoints=websecure"
+      - "traefik.http.routers.cairn.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cairn.loadbalancer.server.port=7860"
+    volumes:
+      - ./model_weights:/app/model_weights
+      - ./config.yaml:/app/config.yaml
+      # - ./assets:/app/assets if you want to add and use your own logos
+
+volumes:
+  letsencrypt:
