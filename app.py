@@ -82,9 +82,8 @@ def _logo_b64(path):
 def _get_logo_path(logo_key):
     filename = config.ui.logos.get(logo_key, "")
     if not filename:
-        return ""
-    assets_path = os.path.join(ABS_DIR, "assets", filename)
-    return assets_path if os.path.exists(assets_path) else os.path.join(ABS_DIR, filename)
+        return None
+    return os.path.join(ABS_DIR, filename)
 
 
 LOGO_TL1 = _logo_b64(_get_logo_path("top_left_1"))
