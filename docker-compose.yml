@@ -6,3 +6,4 @@ services:
     volumes:
       - ./model_weights:/app/model_weights
       - ./config.yaml:/app/config.yaml
+      # - ./assets:/app/assets # uncommment if you want to add and use your own logos
