@@ -1,13 +1,14 @@
 ui:
-  title: "Détection et comptage automatique"
+  title: "CAIRN"
+  subtitle: "CAractérisation par Intelligence artificielle des activités Récréatives en milieux Naturels"
   theme_color: "#981d97"
   page_threshold: 100
   show_visualization: true # Permet d'afficher ou de masquer tout le panneau de droite (tableaux et images)
   logos:
-    top_left_1: "logo_ecrins.png"
-    top_left_2: "logo_lacs.png"
-    top_right_1: "logo_leca.png"
-    top_right_2: "BiodivTourAlps_logo_def.png"
+    top_left_1: "docs/images/logo_ecrins.png"
+    top_left_2: "docs/images/logo_lacs.png"
+    top_right_1: "docs/images/logo_leca.png"
+    top_right_2: "docs/images/BiodivTourAlps_logo_def.png"
 
 models:
   available:
