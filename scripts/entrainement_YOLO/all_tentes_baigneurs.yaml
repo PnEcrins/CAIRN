@@ -1,0 +1,14 @@
+# Split : all_tentes_baigneurs
+# Mode     : tiled 70/20/10
+# Inclus   : Pormenaz, Lauvitel, Lauzon, Anterne, Brevent, Cornu, Muzelle, Jovet, banque_images
+# bg_ratio : 30%
+
+path: /home/weksteenl-ext/MyPython/datasets
+train: splits/all_tentes_baigneurs/train.txt
+val:   splits/all_tentes_baigneurs/val.txt
+test:  splits/all_tentes_baigneurs/test.txt
+
+nc: 2
+names:
+  - tente
+  - baigneur

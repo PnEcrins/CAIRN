@@ -1,0 +1,2 @@
+Scripts utilisés pour créér un Dataframe panda avec l'ensemble des données de 2025.
+Il existe un script méta_données_Muzelle.py parce que sur ce lac le timelapse était différent des autres, notamment aux niveau des exifs.

@@ -1,0 +1,1 @@
+Série de scripts qui avaient pour but d'analyser les résulatts de l'annotation et de faire quelques statistiques.
