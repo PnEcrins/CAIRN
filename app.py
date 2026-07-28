@@ -109,9 +109,31 @@ HEADER_HTML = f"""
 """
 
 MODEL_INFO = {
-    "YOLO": "**YOLOv26** — Modèle spécialisé et rapide. Entraîné sur 3000 images. Meilleures performances pour détection de tentes prises de loin. \n\n*Seuil conseillé : 0.3*",
-    "SAM3": "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement (plusieurs dizaines de secondes par images sinon.) Permet de détecter n'importe quoi (via l'option prompt libre ci-dessous) \n\n*Seuil conseillé : 0.6*",
-    "YOLOv8_Squelette": "**YOLOv8** — Modèle Yolo permettant de détecter automatiquement des personnes, leurs directions de passages, leurs activités.",
+    "YOLO": (
+        "**YOLOv26** — Modèle spécialisé et rapide. Fine-tuné sur 3000 images et 2 classes (tente, baigneur).\n\n "
+        "*Seuil conseillé : 0.3* \n\n"
+        "**Performances (mAP)**\n"
+        "- Sans tiling : 0.5\n"
+        "- Avec tiling : 0.85\n\n"
+        "**Temps de traitement moyen (CPU, 100 images)**\n"
+        "- Sans tiling : ~30 secondes\n"
+        "- Avec tiling : ~30 minutes\n\n"
+        "En savoir plus : [Documentation YOLOv26](https://docs.ultralytics.com/fr/models/yolo26#pr%C3%A9sentation)"
+    ),
+    "SAM3": (
+        "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement "
+        "(plusieurs dizaines de secondes par image sinon.) Permet de détecter n'importe quoi "
+        "(via l'option prompt libre ci-dessous). \n\n"
+        "*Seuil conseillé : 0.6* \n\n"
+        "**Performances (mAP)**\n"
+        "- Sans tiling : 0.4\n"
+        "- Avec tiling : 0.5\n\n"
+        "**Temps de traitement moyen (CPU, 100 images)**\n"
+        "- Sans tiling : ~30 minutes\n"
+        "- Avec tiling : ~10 heures\n\n"
+        "En savoir plus : [Documentation SAM3](https://docs.ultralytics.com/fr/models/sam-3)"
+    ),
+    "YOLOv8_Squelette": "**YOLOv8** — Modèle Yolo permettant de détecter automatiquement des personnes, leurs directions de passages, leurs activités. \n\n En savoir plus : [Git du projet](https://github.com/Attendance-PNE-OFB/yolov8-attendance/blob/main/README-FR.md)",
 }
 
 # ── Thème Custom & CSS ─────────────────────────────────────────────────────────
@@ -572,7 +594,7 @@ with gr.Blocks(title=config.ui.title) as demo:
                         label="Activer le tiling (Petits objets)", value=True
                     )
                     tiling_info = gr.Markdown(
-                        value=" **Tiling** : Technique de découpage de l'image pour augmenter les performances pour la détection de petits objets. Fortement recommandé.",
+                        value=" **Tiling** : Technique de découpage de l'image pour augmenter les performances pour la détection de petits objets. Fortement recommandé.\n\n En savoir plus : [Documentation Tiling](https://docs.ultralytics.com/fr/guides/sahi-tiled-inference#introduction-%C3%A0-sahi)",
                         elem_id="tiling-info",
                         visible=True,
                     )
