@@ -161,9 +161,10 @@ CUSTOM_CSS = (
     f"#model-info {{ background-color: #f0f2f6; border-left: 4px solid {config.ui.theme_color}; padding: 15px; border-radius: 8px; }}"
     f"#tiling-info {{ background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 8px; color: #92400e; font-size: 0.9em; }}"
     f"#file-upload .file-preview-holder {{ display: none !important; }}"
-    f"#file-upload .upload-container {{ min-height: unset !important; padding: 20px !important; }}"
+    f"#file-upload .upload-container {{ height: 120px !important; min-height: unset !important; padding: 10px !important; display: flex; align-items: center; justify-content: center; }}"
     f"#run-btn {{ font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 1px !important; }}"
     f"#folder-input-info {{ background-color: #f0f7ff; border-left: 4px solid #3b82f6; padding: 10px 12px; border-radius: 8px; color: #1e40af; font-size: 0.85em; margin-top: 4px; }}"
+    f".section-title {{ color: {config.ui.theme_color}; margin-top: 10px; margin-bottom: 5px; font-weight: 600; font-size: 1.2rem; border-bottom: 2px solid #e2e4e7; padding-bottom: 5px; }}"
 )
 
 
@@ -225,7 +226,7 @@ def run_detection(
         return None, f" {err}", pd.DataFrame(), gr.update(visible=False, choices=[])
 
     # ── PIPELINE PIÈGE PHOTOS (OFB_ATTENDANCE) ─────────────────────────────────
-    if analysis_type == "Analyse Piège Photos Randonneurs":
+    if analysis_type == "Détection automatique (piège photo)":
         if not HAS_OFB_SCRIPT:
             return (
                 None,
@@ -476,7 +477,9 @@ def on_upload_change(imgs):
 def on_folder_change(folder_path):
     if not folder_path or not os.path.isdir(folder_path):
         return [], "Dossier invalide ou introuvable."
-    paths = sorted(str(p) for p in Path(folder_path).iterdir() if p.suffix.lower() in IMAGE_EXTS)
+    paths = sorted(
+        str(p) for p in Path(folder_path).iterdir() if p.suffix.lower() in IMAGE_EXTS
+    )
     return paths, f"📁 {len(paths)} image(s) trouvée(s)"
 
 
@@ -490,7 +493,7 @@ def toggle_input_mode(mode):
 
 
 def update_ui_visibility(analysis_mode, timelapse_model):
-    if analysis_mode == "Analyse Piège Photos Randonneurs":
+    if analysis_mode == "Détection automatique (piège photo)":
         return (
             gr.update(visible=False),
             gr.update(value=MODEL_INFO["YOLOv8_Squelette"], visible=True),
@@ -526,11 +529,12 @@ with gr.Blocks(title=config.ui.title) as demo:
         # ── Colonne gauche : paramètres ────────────────────────────────────────
         with gr.Column(scale=1):
 
+            gr.Markdown("<div class='section-title'>1. Mode d'import des images</div>")
             with gr.Group():
                 input_mode = gr.Radio(
                     choices=["Upload fichiers", "Dossier local"],
                     value="Upload fichiers",
-                    label="Mode d'import des images",
+                    label="Source des images",
                 )
                 images_input = gr.File(
                     label="Importer les images",
@@ -557,24 +561,27 @@ with gr.Blocks(title=config.ui.title) as demo:
                     placeholder="En attente d'images...",
                 )
 
-            with gr.Accordion("2. Paramètres de l'IA", open=True):
+            gr.Markdown("<div class='section-title'>2. Paramètres de l'IA</div>")
+            with gr.Group():
                 analysis_type = gr.Radio(
-                    choices=["Analyse Timelapse", "Analyse Piège Photos Randonneurs"],
-                    value="Analyse Timelapse",
-                    label="Type d'analyse",
+                    choices=["Timelapse", "Détection automatique (piège photo)"],
+                    value="Timelapse",
+                    label="Type de données à analyser",
                 )
-                model_input = gr.Radio(
-                    choices=["YOLO", "SAM3"],
-                    value="YOLO",
-                    label="Modèle Timelapse",
-                )
-                model_info = gr.Markdown(value="", elem_id="model-info", visible=False)
-
+                
                 targets_input = gr.CheckboxGroup(
                     choices=config.features.classes,
                     value=config.features.classes,
                     label="Cibles à rechercher",
                 )
+                
+                model_input = gr.Radio(
+                    choices=["YOLO", "SAM3"],
+                    value="YOLO",
+                    label="Modèle",
+                )
+                model_info = gr.Markdown(value="", elem_id="model-info", visible=False)
+
                 free_prompt_input = gr.Textbox(
                     label="Prompt libre (SAM3 uniquement)",
                     placeholder="ex: sac à dos, chien...",
@@ -613,7 +620,6 @@ with gr.Blocks(title=config.ui.title) as demo:
                     show_label=False,
                     placeholder="Statut...",
                 )
-                csv_output = gr.File(label="Enregistrer le rapport (CSV)")
 
         # ── Colonne droite : visualisation ─────────────────────────────────────
         with gr.Column(scale=2, visible=config.ui.show_visualization) as right_side:
@@ -635,8 +641,12 @@ with gr.Blocks(title=config.ui.title) as demo:
                 visu_image = gr.Image(
                     label="Visualisation de la détection", type="numpy", interactive=False
                 )
+            
+            with gr.Group():
+                csv_output = gr.File(label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)")
 
     # ── Wiring des événements ──────────────────────────────────────────────────
+    
     _visibility_outputs = [
         model_input,
         model_info,
