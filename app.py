@@ -317,7 +317,7 @@ def run_detection(
         )
 
     _active_columns = ["image_name"]
-    csv_columns_to_keep = ["image_name", "datetime", "year", "month", "day", "hour"]
+    csv_columns_to_keep = ["image_name", "date", "datetime", "year", "month", "day", "hour"]
 
     if "baigneur" in targets_list:
         _active_columns.append("count_baigneur")
