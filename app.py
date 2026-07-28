@@ -594,7 +594,7 @@ with gr.Blocks(title=config.ui.title) as demo:
                         label="Activer le tiling (Petits objets)", value=True
                     )
                     tiling_info = gr.Markdown(
-                        value=" **Tiling** : Technique de découpage de l'image pour augmenter les performances pour la détection de petits objets. Fortement recommandé.\n\n En savoir plus : [Documentation Tiling](https://docs.ultralytics.com/fr/guides/sahi-tiled-inference#introduction-%C3%A0-sahi)",
+                        value=" **Tiling** : Technique de découpage de l'image pour augmenter les performances pour la détection de petits objets. Fortement recommandé.\n\n Augmente le temps de traitement d'un facteur 10. \n\n En savoir plus : [Documentation Tiling](https://docs.ultralytics.com/fr/guides/sahi-tiled-inference#introduction-%C3%A0-sahi)",
                         elem_id="tiling-info",
                         visible=True,
                     )
