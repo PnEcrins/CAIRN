@@ -109,8 +109,8 @@ HEADER_HTML = f"""
 """
 
 MODEL_INFO = {
-    "YOLO": "**YOLOv26** — Modèle spécialisé et rapide. Entraîné sur 3000 images. Meilleures performances pour détection de tentes prises de loin. \n\n*Seuil conseillé : 0.4*",
-    "SAM3": "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement (plusieurs dizaines de secondes par images sinon.) Permet de détecter n'importe quoi (via l'option prompt libre ci-dessous) \n\n*Seuil conseillé : 0.4*",
+    "YOLO": "**YOLOv26** — Modèle spécialisé et rapide. Entraîné sur 3000 images. Meilleures performances pour détection de tentes prises de loin. \n\n*Seuil conseillé : 0.3*",
+    "SAM3": "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement (plusieurs dizaines de secondes par images sinon.) Permet de détecter n'importe quoi (via l'option prompt libre ci-dessous) \n\n*Seuil conseillé : 0.6*",
     "YOLOv8_Squelette": "**YOLOv8** — Modèle Yolo permettant de détecter automatiquement des personnes, leurs directions de passages, leurs activités.",
 }
 
@@ -157,6 +157,11 @@ def _free_model(model):
             torch.cuda.empty_cache()
     except Exception:
         pass
+
+
+def _default_conf_for(model_name: str) -> float:
+    """Retourne le seuil de confiance par défaut associé à un modèle donné."""
+    return getattr(config.models.default_confidence, model_name, 0.4)
 
 
 def _resolve_image_paths(files, input_mode, folder_path) -> tuple[list[str], str | None]:
@@ -480,7 +485,10 @@ def update_ui_visibility(analysis_mode, timelapse_model):
             gr.update(value=MODEL_INFO.get(timelapse_model, ""), visible=True),
             gr.update(visible=True),
             gr.update(visible=is_sam3),
-            gr.update(visible=config.models.show_confidence_slider),
+            gr.update(
+                value=_default_conf_for(timelapse_model),
+                visible=config.models.show_confidence_slider,
+            ),
             gr.update(visible=config.features.allow_tiling),
             gr.update(visible=config.ui.show_visualization),
         )
@@ -555,7 +563,7 @@ with gr.Blocks(title=config.ui.title) as demo:
                     minimum=config.models.confidence_range[0],
                     maximum=config.models.confidence_range[1],
                     step=0.05,
-                    value=config.models.default_confidence,
+                    value=_default_conf_for("YOLO"),
                     label="Seuil de confiance",
                     visible=config.models.show_confidence_slider,
                 )

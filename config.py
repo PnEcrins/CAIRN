@@ -41,10 +41,19 @@ class UISchema(Schema):
     logos = fields.Nested(LogosSchema, required=False, load_default=dict)
 
 
+class DefaultConfidenceSchema(Schema):
+    YOLO = fields.Float(required=False, load_default=0.3)
+    SAM3 = fields.Float(required=False, load_default=0.6)
+
+
 class ModelsSchema(Schema):
     available = fields.List(fields.Str(), required=False, load_default=list)
     device = fields.Str(required=False, load_default="cpu")
-    default_confidence = fields.Float(required=False, load_default=0.4)
+    default_confidence = fields.Nested(
+        DefaultConfidenceSchema,
+        required=False,
+        load_default=lambda: {"YOLO": 0.3, "SAM3": 0.6},
+    )
     show_confidence_slider = fields.Bool(required=False, load_default=True)
     confidence_range = fields.List(fields.Float(), required=False, load_default=lambda: [0.1, 0.9])
     YOLO_MODEL_FILEPATH = PathField(required=False, load_default=None)
