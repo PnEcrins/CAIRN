@@ -55,7 +55,7 @@ def build_output_name(image_path: str, dt: datetime | None, index: int) -> str:
     """
     Retourne le nom de fichier final (sans dossier).
     - Si datetime connue : AAAA-MM-JJ-HH-MM-SS.ext
-    - Sinon             : image_sans_date_001.ext
+    - Sinon              : image_sans_date_001.ext
     """
     ext = Path(image_path).suffix.lower()
 
@@ -76,18 +76,28 @@ def preprocess_images(image_paths: list[str]) -> list[dict]:
     """
     results = []
     generic_counter = 1
+    seen_names = {}
 
     for path in image_paths:
         dt = get_exif_datetime(path)
-        name = build_output_name(path, dt, generic_counter)
+        base_name = build_output_name(path, dt, generic_counter)
 
         if dt is None:
             generic_counter += 1
 
+        # GESTION DES DOUBLONS (Même date / Même heure)
+        if base_name in seen_names:
+            seen_names[base_name] += 1
+            name_path = Path(base_name)
+            final_name = f"{name_path.stem}_{seen_names[base_name]}{name_path.suffix}"
+        else:
+            seen_names[base_name] = 0
+            final_name = base_name
+
         results.append(
             {
                 "original_path": path,
-                "output_name": name,
+                "output_name": final_name,
                 "datetime": dt,
             }
         )
