@@ -24,6 +24,9 @@ Un exemple de fichier de configuration est disponible dans `config.yaml.sample`.
 | `logos.top_left_2` | chaîne | _(aucun)_ | Chemin vers le logo en haut à gauche (position 2). |
 | `logos.top_right_1` | chaîne | _(aucun)_ | Chemin vers le logo en haut à droite (position 1). |
 | `logos.top_right_2` | chaîne | _(aucun)_ | Chemin vers le logo en haut à droite (position 2). |
+| `use_local_storage` | booléen | _False_| Possibilité de donner le chemin vers les images dans le serveurs |
+
+
 
 **Exemple :**
 ```yaml
@@ -45,7 +48,7 @@ ui:
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `available` | liste de chaînes | `[]` | Liste des modèles disponibles dans l'interface (ex. `YOLO`, `SAM3`). |
+| `available` | liste de chaînes | `["YOLO","SAM3"]` | Liste des modèles disponibles dans l'interface (ex. `YOLO`, `SAM3`). |
 | `device` | chaîne | `"cpu"` | Dispositif d'inférence : `"cpu"` ou `"cuda"` (carte graphique). |
 | `default_confidence` | flottant | `0.4` | Seuil de confiance appliqué par défaut. |
 | `show_confidence_slider` | booléen | `true` | Affiche ou masque le curseur de confiance dans l'interface. Si `false`, la valeur par défaut est utilisée. |
