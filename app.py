@@ -109,9 +109,31 @@ HEADER_HTML = f"""
 """
 
 MODEL_INFO = {
-    "YOLO": "**YOLOv26** — Modèle spécialisé et rapide. Entraîné sur 3000 images. Meilleures performances pour détection de tentes prises de loin. \n\n*Seuil conseillé : 0.4*",
-    "SAM3": "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement (plusieurs dizaines de secondes par images sinon.) Permet de détecter n'importe quoi (via l'option prompt libre ci-dessous) \n\n*Seuil conseillé : 0.4*",
-    "YOLOv8_Squelette": "**YOLOv8** — Modèle Yolo permettant de détecter automatiquement des personnes, leurs directions de passages, leurs activités.",
+    "YOLO": (
+        "**YOLOv26** — Modèle spécialisé et rapide. Fine-tuné sur 3000 images et 2 classes (tente, baigneur).\n\n "
+        "*Seuil conseillé : 0.3* \n\n"
+        "**Performances (mAP)**\n"
+        "- Sans tiling : 0.5\n"
+        "- Avec tiling : 0.85\n\n"
+        "**Temps de traitement moyen (CPU, 100 images)**\n"
+        "- Sans tiling : ~30 secondes\n"
+        "- Avec tiling : ~30 minutes\n\n"
+        "En savoir plus : [Documentation YOLOv26](https://docs.ultralytics.com/fr/models/yolo26#pr%C3%A9sentation)"
+    ),
+    "SAM3": (
+        "**SAM3** — Attention ! Modèle très lourd qui nécessite d'avoir un GPU pour tourner convenablement "
+        "(plusieurs dizaines de secondes par image sinon.) Permet de détecter n'importe quoi "
+        "(via l'option prompt libre ci-dessous). \n\n"
+        "*Seuil conseillé : 0.6* \n\n"
+        "**Performances (mAP)**\n"
+        "- Sans tiling : 0.4\n"
+        "- Avec tiling : 0.5\n\n"
+        "**Temps de traitement moyen (CPU, 100 images)**\n"
+        "- Sans tiling : ~30 minutes\n"
+        "- Avec tiling : ~10 heures\n\n"
+        "En savoir plus : [Documentation SAM3](https://docs.ultralytics.com/fr/models/sam-3)"
+    ),
+    "YOLOv8_Squelette": "**YOLOv8** — Modèle Yolo permettant de détecter automatiquement des personnes, leurs directions de passages, leurs activités. \n\n En savoir plus : [Git du projet](https://github.com/Attendance-PNE-OFB/yolov8-attendance/blob/main/README-FR.md)",
 }
 
 # ── Thème Custom & CSS ─────────────────────────────────────────────────────────
@@ -139,9 +161,10 @@ CUSTOM_CSS = (
     f"#model-info {{ background-color: #f0f2f6; border-left: 4px solid {config.ui.theme_color}; padding: 15px; border-radius: 8px; }}"
     f"#tiling-info {{ background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 8px; color: #92400e; font-size: 0.9em; }}"
     f"#file-upload .file-preview-holder {{ display: none !important; }}"
-    f"#file-upload .upload-container {{ min-height: unset !important; padding: 20px !important; }}"
+    f"#file-upload .upload-container {{ height: 120px !important; min-height: unset !important; padding: 10px !important; display: flex; align-items: center; justify-content: center; }}"
     f"#run-btn {{ font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 1px !important; }}"
     f"#folder-input-info {{ background-color: #f0f7ff; border-left: 4px solid #3b82f6; padding: 10px 12px; border-radius: 8px; color: #1e40af; font-size: 0.85em; margin-top: 4px; }}"
+    f".section-title {{ color: {config.ui.theme_color}; margin-top: 10px; margin-bottom: 5px; font-weight: 600; font-size: 1.2rem; border-bottom: 2px solid #e2e4e7; padding-bottom: 5px; }}"
 )
 
 
@@ -157,6 +180,11 @@ def _free_model(model):
             torch.cuda.empty_cache()
     except Exception:
         pass
+
+
+def _default_conf_for(model_name: str) -> float:
+    """Retourne le seuil de confiance par défaut associé à un modèle donné."""
+    return getattr(config.models.default_confidence, model_name, 0.4)
 
 
 def _resolve_image_paths(files, input_mode, folder_path) -> tuple[list[str], str | None]:
@@ -198,7 +226,7 @@ def run_detection(
         return None, f" {err}", pd.DataFrame(), gr.update(visible=False, choices=[])
 
     # ── PIPELINE PIÈGE PHOTOS (OFB_ATTENDANCE) ─────────────────────────────────
-    if analysis_type == "Analyse Piège Photos Randonneurs":
+    if analysis_type == "auto":
         if not HAS_OFB_SCRIPT:
             return (
                 None,
@@ -463,7 +491,7 @@ def toggle_input_mode(mode):
 
 
 def update_ui_visibility(analysis_mode, timelapse_model):
-    if analysis_mode == "Analyse Piège Photos Randonneurs":
+    if analysis_mode == "auto":
         return (
             gr.update(visible=False),
             gr.update(value=MODEL_INFO["YOLOv8_Squelette"], visible=True),
@@ -480,7 +508,10 @@ def update_ui_visibility(analysis_mode, timelapse_model):
             gr.update(value=MODEL_INFO.get(timelapse_model, ""), visible=True),
             gr.update(visible=True),
             gr.update(visible=is_sam3),
-            gr.update(visible=config.models.show_confidence_slider),
+            gr.update(
+                value=_default_conf_for(timelapse_model),
+                visible=config.models.show_confidence_slider,
+            ),
             gr.update(visible=config.features.allow_tiling),
             gr.update(visible=config.ui.show_visualization),
         )
@@ -496,11 +527,12 @@ with gr.Blocks(title=config.ui.title) as demo:
         # ── Colonne gauche : paramètres ────────────────────────────────────────
         with gr.Column(scale=1):
 
+            gr.Markdown("<div class='section-title'>1. Mode d'import des images</div>")
             with gr.Group():
                 input_mode = gr.Radio(
                     choices=["Upload fichiers", "Dossier local"],
                     value="Upload fichiers",
-                    label="Mode d'import des images",
+                    label="Source des images",
                 )
                 images_input = gr.File(
                     label="Importer les images",
@@ -527,24 +559,27 @@ with gr.Blocks(title=config.ui.title) as demo:
                     placeholder="En attente d'images...",
                 )
 
-            with gr.Accordion("2. Paramètres de l'IA", open=True):
+            gr.Markdown("<div class='section-title'>2. Paramètres de l'IA</div>")
+            with gr.Group():
                 analysis_type = gr.Radio(
-                    choices=["Analyse Timelapse", "Analyse Piège Photos Randonneurs"],
-                    value="Analyse Timelapse",
-                    label="Type d'analyse",
+                    choices=[("Timelapse", "timelapse"), ("Détection automatique", "auto")],
+                    value="timelapse",
+                    label="Type de données à analyser",
                 )
-                model_input = gr.Radio(
-                    choices=["YOLO", "SAM3"],
-                    value="YOLO",
-                    label="Modèle Timelapse",
-                )
-                model_info = gr.Markdown(value="", elem_id="model-info", visible=False)
 
                 targets_input = gr.CheckboxGroup(
                     choices=config.features.classes,
                     value=config.features.classes,
                     label="Cibles à rechercher",
                 )
+
+                model_input = gr.Radio(
+                    choices=["YOLO", "SAM3"],
+                    value="YOLO",
+                    label="Modèle",
+                )
+                model_info = gr.Markdown(value="", elem_id="model-info", visible=False)
+
                 free_prompt_input = gr.Textbox(
                     label="Prompt libre (SAM3 uniquement)",
                     placeholder="ex: sac à dos, chien...",
@@ -555,7 +590,7 @@ with gr.Blocks(title=config.ui.title) as demo:
                     minimum=config.models.confidence_range[0],
                     maximum=config.models.confidence_range[1],
                     step=0.05,
-                    value=config.models.default_confidence,
+                    value=_default_conf_for("YOLO"),
                     label="Seuil de confiance",
                     visible=config.models.show_confidence_slider,
                 )
@@ -564,7 +599,7 @@ with gr.Blocks(title=config.ui.title) as demo:
                         label="Activer le tiling (Petits objets)", value=True
                     )
                     tiling_info = gr.Markdown(
-                        value=" **Tiling** : Technique de découpage de l'image pour augmenter les performances pour la détection de petits objets. Fortement recommandé.",
+                        value=" **Tiling** : Technique de découpage de l'image pour augmenter les performances pour la détection de petits objets. Fortement recommandé.\n\n Augmente le temps de traitement d'un facteur 10. \n\n En savoir plus : [Documentation Tiling](https://docs.ultralytics.com/fr/guides/sahi-tiled-inference#introduction-%C3%A0-sahi)",
                         elem_id="tiling-info",
                         visible=True,
                     )
@@ -583,7 +618,6 @@ with gr.Blocks(title=config.ui.title) as demo:
                     show_label=False,
                     placeholder="Statut...",
                 )
-                csv_output = gr.File(label="Enregistrer le rapport (CSV)")
 
         # ── Colonne droite : visualisation ─────────────────────────────────────
         with gr.Column(scale=2, visible=config.ui.show_visualization) as right_side:
@@ -606,7 +640,13 @@ with gr.Blocks(title=config.ui.title) as demo:
                     label="Visualisation de la détection", type="numpy", interactive=False
                 )
 
+            with gr.Group():
+                csv_output = gr.File(
+                    label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)"
+                )
+
     # ── Wiring des événements ──────────────────────────────────────────────────
+
     _visibility_outputs = [
         model_input,
         model_info,
