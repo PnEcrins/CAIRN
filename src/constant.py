@@ -1,6 +1,5 @@
 import os
 import gradio as gr
-import pandas as pd
 
 ABS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -78,9 +77,3 @@ def get_html_header(config, logo_tl1, logo_tl2, logo_tr1, logo_tr2):
     </h2>
     <div style="display:flex;gap:15px;flex-shrink:0;align-items:center;">{_logo_img(logo_tr1, "HD1", h=50)}{_logo_img(logo_tr2, "HD2", h=80)}</div>
 </div>"""
-
-
-# ── Variables d'état globales ──────────────────────────────────────────────────
-_path_registry: dict[str, str] = {}
-_last_df: pd.DataFrame = pd.DataFrame()
-_active_columns: list[str] = ["image_name"]

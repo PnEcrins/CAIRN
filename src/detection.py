@@ -25,7 +25,6 @@ from models.yolo import YoloModel
 from models.sam3 import SAM3Model
 from exporter import export_to_csv
 from config import config
-from src.constant import _path_registry, _last_df, _active_columns
 
 # ── Importation sécurisée du script OFB ───────────────────────────────────────
 HAS_OFB_SCRIPT = False
@@ -78,11 +77,21 @@ def run_detection(
     free_prompt,
     conf,
     use_tiling,
+    path_registry,
+    last_df,
+    active_columns,
 ):
-    global _path_registry, _last_df, _active_columns
     image_paths, err = _resolve_image_paths(files, input_mode, folder_path)
     if err:
-        return None, f" {err}", pd.DataFrame(), gr.update(visible=False, choices=[])
+        return (
+            None,
+            f" {err}",
+            pd.DataFrame(),
+            gr.update(visible=False, choices=[]),
+            path_registry,
+            last_df,
+            active_columns,
+        )
 
     # ── PIPELINE PIÈGE PHOTOS (OFB_ATTENDANCE) ─────────────────────────────────
     if analysis_type == "auto":
@@ -92,6 +101,9 @@ def run_detection(
                 " Erreur : Les scripts du dossier 'ofb_attendance' sont introuvables.",
                 pd.DataFrame(),
                 gr.update(visible=False, choices=[]),
+                path_registry,
+                last_df,
+                active_columns,
             )
 
         with tempfile.TemporaryDirectory() as temp_input_dir:
@@ -106,6 +118,9 @@ def run_detection(
                         f" Erreur lors de la préparation des fichiers : {e}",
                         pd.DataFrame(),
                         gr.update(visible=False, choices=[]),
+                        path_registry,
+                        last_df,
+                        active_columns,
                     )
 
             try:
@@ -117,6 +132,9 @@ def run_detection(
                     f" Erreur lors du chargement des poids : {e}",
                     pd.DataFrame(),
                     gr.update(visible=False, choices=[]),
+                    path_registry,
+                    last_df,
+                    active_columns,
                 )
 
             try:
@@ -152,10 +170,21 @@ def run_detection(
                     f" Erreur durant le traitement : {e}",
                     pd.DataFrame(),
                     gr.update(visible=False, choices=[]),
+                    path_registry,
+                    last_df,
+                    active_columns,
                 )
 
         summary = f" Analyse terminée. {len(image_paths)} image(s) traitée(s)."
-        return return_csv_path, summary, pd.DataFrame(), gr.update(visible=False, choices=[])
+        return (
+            return_csv_path,
+            summary,
+            pd.DataFrame(),
+            gr.update(visible=False, choices=[]),
+            path_registry,
+            last_df,
+            active_columns,
+        )
 
     # ── PIPELINE TIMELAPSE (YOLO / SAM3) ──────────────────────────────────────
     model_name = timelapse_model
@@ -173,24 +202,26 @@ def run_detection(
             "Sélectionnez au moins une cible.",
             pd.DataFrame(),
             gr.update(visible=False, choices=[]),
+            path_registry,
+            last_df,
+            active_columns,
         )
 
-    _active_columns = ["image_name"]
+    active_columns = ["image_name"]
     csv_columns_to_keep = ["image_name", "date", "datetime", "year", "month", "day", "hour"]
 
     if "baigneur" in targets_list:
-        _active_columns.append("count_baigneur")
+        active_columns.append("count_baigneur")
         csv_columns_to_keep.extend(["count_baigneur", "bbox_baigneur"])
     if "tente" in targets_list:
-        _active_columns.append("count_tente")
+        active_columns.append("count_tente")
         csv_columns_to_keep.extend(["count_tente", "bbox_tente"])
     if free_prompt:
-        _active_columns.append("count_prompt")
+        active_columns.append("count_prompt")
         csv_columns_to_keep.extend(["count_prompt", "bbox_prompt"])
 
     preprocessed = preprocess_images(image_paths)
-    _path_registry = {item["output_name"]: item["original_path"] for item in preprocessed}
-    print(_path_registry)
+    path_registry = {item["output_name"]: item["original_path"] for item in preprocessed}
     device_setting = config.models.device
     model = (
         YoloModel(conf=conf, device=device_setting, model_path=config.features.model_path.YOLO)
@@ -221,14 +252,14 @@ def run_detection(
     full_df = pd.read_csv(raw_csv_path)
 
     existing_csv_cols = [c for c in csv_columns_to_keep if c in full_df.columns]
-    _last_df = full_df[existing_csv_cols].copy()
-    _last_df.to_csv(raw_csv_path, index=False)
+    last_df = full_df[existing_csv_cols].copy()
+    last_df.to_csv(raw_csv_path, index=False)
 
     summary = f" {len(preprocessed)} image(s) analysée(s) — {len(all_detections)} objets détectés."
 
     if config.ui.show_visualization and len(preprocessed) > config.ui.page_threshold:
         days = (
-            _last_df[["year", "month", "day"]]
+            last_df[["year", "month", "day"]]
             .dropna()
             .drop_duplicates()
             .astype(int)
@@ -239,13 +270,19 @@ def run_detection(
             return (
                 raw_csv_path,
                 summary,
-                _get_day_df(days[0]),
+                _get_day_df(days[0], last_df, active_columns),
                 gr.update(visible=True, choices=days, value=days[0]),
+                path_registry,
+                last_df,
+                active_columns,
             )
 
     return (
         raw_csv_path,
         summary,
-        _last_df[_active_columns].copy(),
+        last_df[active_columns].copy(),
         gr.update(visible=False, choices=[]),
+        path_registry,
+        last_df,
+        active_columns,
     )

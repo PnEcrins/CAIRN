@@ -16,9 +16,6 @@ from src.constant import (
     COLORS,
     DISPLAY_MAX_DIM,
     IMAGE_EXTS,
-    _path_registry,
-    _last_df,
-    _active_columns,
 )
 import gradio as gr
 
@@ -50,7 +47,7 @@ def _resolve_image_paths(files, input_mode, folder_path) -> tuple[list[str], str
     Retourne (image_paths, error_message).
     Gère les deux modes d'import : upload Gradio et dossier local.
     """
-    if input_mode == "Dossier local":
+    if input_mode == "folder":
         if not folder_path or not os.path.isdir(folder_path):
             return [], "Dossier introuvable ou invalide."
         paths = sorted(
@@ -68,12 +65,12 @@ def _resolve_image_paths(files, input_mode, folder_path) -> tuple[list[str], str
 # ── Fonctions Backend ──────────────────────────────────────────────────────────
 
 
-def _get_day_df(day_label: str) -> pd.DataFrame:
-    if _last_df.empty or not day_label or "image_name" not in _last_df.columns:
+def _get_day_df(day_label: str, last_df: pd.DataFrame, active_columns: list[str]) -> pd.DataFrame:
+    if last_df.empty or not day_label or "image_name" not in last_df.columns:
         return pd.DataFrame()
     y, m, d = map(int, day_label.split("-"))
-    mask = (_last_df["year"] == y) & (_last_df["month"] == m) & (_last_df["day"] == d)
-    return _last_df[mask][_active_columns].copy()
+    mask = (last_df["year"] == y) & (last_df["month"] == m) & (last_df["day"] == d)
+    return last_df[mask][active_columns].copy()
 
 
 def draw_box(img, box, color, label):
@@ -84,15 +81,20 @@ def draw_box(img, box, color, label):
     cv2.putText(img, label, (x1, y1 - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
 
-def on_image_select(table_df, evt: gr.SelectData, current_model):
-    global _path_registry, _last_df, _active_columns
+def on_image_select(
+    table_df,
+    evt: gr.SelectData,
+    current_model,
+    path_registry: dict[str, str],
+    last_df: pd.DataFrame,
+):
     if not config.ui.show_visualization:
         return None, ""
     if "image_name" not in table_df.columns:
         return None, ""
 
     image_name = table_df.iloc[evt.index[0]]["image_name"]
-    original_path = _path_registry.get(image_name)
+    original_path = path_registry.get(image_name)
     if not original_path:
         return None, f"Chemin introuvable pour '{image_name}'."
 
@@ -112,7 +114,7 @@ def on_image_select(table_df, evt: gr.SelectData, current_model):
     else:
         scale = 1.0
 
-    rows = _last_df[_last_df["image_name"] == image_name]
+    rows = last_df[last_df["image_name"] == image_name]
     if not rows.empty:
         row = rows.iloc[0]
         for col, label in [

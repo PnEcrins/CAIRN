@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import gradio as gr
+import pandas as pd
 
 from src.constant import MODEL_INFO, IMAGE_EXTS
 from src.detection import run_detection
@@ -22,7 +23,7 @@ def on_folder_change(folder_path):
 
 
 def toggle_input_mode(mode):
-    is_upload = mode == "Upload fichiers"
+    is_upload = mode == "upload"
     return (
         gr.update(visible=is_upload),
         gr.update(visible=not is_upload),
@@ -59,6 +60,9 @@ def update_ui_visibility(analysis_mode, timelapse_model):
 
 def get_layout(config, HEADER_HTML, gradio_context_variable):
     stored_files = gr.State([])
+    path_registry_state = gr.State({})
+    last_df_state = gr.State(pd.DataFrame())
+    active_columns_state = gr.State(["image_name"])
     gr.HTML(HEADER_HTML)
 
     with gr.Row():
@@ -68,8 +72,11 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
             gr.Markdown("<div class='section-title'>1. Mode d'import des images</div>")
             with gr.Group():
                 input_mode = gr.Radio(
-                    choices=["Upload fichiers", "Dossier local"],
-                    value="Upload fichiers",
+                    (
+                        [("Upload fichiers", "upload"), ("Dossier local", "folder")]
+                        if config.ui.use_local_storage
+                        else [("Upload fichiers", "upload")]
+                    ),
                     label="Source des images",
                 )
                 images_input = gr.File(
@@ -111,8 +118,8 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
                     label="Cibles à rechercher",
                 )
                 model_input = gr.Radio(
-                    choices=["YOLO", "SAM3"],
-                    value="YOLO",
+                    choices=config.models.available,
+                    value=config.models.available[0] if config.models.available else "YOLO",
                     label="Modèle",
                 )
                 model_info = gr.Markdown(value="", elem_id="model-info", visible=False)
@@ -235,8 +242,19 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
                 free_prompt_input,
                 conf_slider,
                 tiling_checkbox if config.features.allow_tiling else gr.State(False),
+                path_registry_state,
+                last_df_state,
+                active_columns_state,
             ],
-            outputs=[csv_output, status_output, selector_table, day_selector],
+            outputs=[
+                csv_output,
+                status_output,
+                selector_table,
+                day_selector,
+                path_registry_state,
+                last_df_state,
+                active_columns_state,
+            ],
         )
 
         # Associer le bouton stop à l'annulation de cet événement spécifique
@@ -248,10 +266,14 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
         )
 
         if config.ui.show_visualization:
-            day_selector.change(fn=_get_day_df, inputs=day_selector, outputs=selector_table)
+            day_selector.change(
+                fn=_get_day_df,
+                inputs=[day_selector, last_df_state, active_columns_state],
+                outputs=selector_table,
+            )
             selector_table.select(
                 fn=on_image_select,
-                inputs=[selector_table, model_input],
+                inputs=[selector_table, model_input, path_registry_state, last_df_state],
                 outputs=[visu_image, visu_info],
             )
 
