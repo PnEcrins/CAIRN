@@ -572,7 +572,6 @@ with gr.Blocks(title=config.ui.title) as demo:
                     value=config.features.classes,
                     label="Cibles à rechercher",
                 )
-
                 model_input = gr.Radio(
                     choices=["YOLO", "SAM3"],
                     value="YOLO",
@@ -646,7 +645,6 @@ with gr.Blocks(title=config.ui.title) as demo:
                 )
 
     # ── Wiring des événements ──────────────────────────────────────────────────
-
     _visibility_outputs = [
         model_input,
         model_info,
