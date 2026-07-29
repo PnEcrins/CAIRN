@@ -156,8 +156,7 @@ Un fichier CSV est généré automatiquement à la fin de chaque analyse. Clique
 Le CSV produit par l'analyse piège photos reprend le format natif du script `ofb_attendance` (classification par séquence et agrégation temporelle).
 
 
-```
 ## 7. Meilleure façon de faire
 
 Lorsque l'on souhaite analyser une large quantité de donnée (par exemple les timelapses capturés au long d'une saison) il est préférable de commencer par uploader quelques images contenant des tentes ou baigneurs à détecter. Comme ça l'analyse par l'application web sera rapide et on aura rapidement une idée des résultats que l'on pourra attendre en utilisant le module visualisation. 
-Si les performances conviennent on peut ensuite upload l'intégralité des images (limite de 1 Go) et lancer l'analyse (le soir pour que ça travaille la nuit). 
+Si les performances conviennent on peut ensuite upload l'intégralité des images (limite de 1 Go sur https://cairn.ecrins.net/) et lancer l'analyse (le soir pour que ça travaille la nuit). 
