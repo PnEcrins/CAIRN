@@ -226,7 +226,7 @@ def run_detection(
         return None, f" {err}", pd.DataFrame(), gr.update(visible=False, choices=[])
 
     # ── PIPELINE PIÈGE PHOTOS (OFB_ATTENDANCE) ─────────────────────────────────
-    if analysis_type == "Détection automatique (piège photo)":
+    if analysis_type == "auto":
         if not HAS_OFB_SCRIPT:
             return (
                 None,
@@ -477,9 +477,7 @@ def on_upload_change(imgs):
 def on_folder_change(folder_path):
     if not folder_path or not os.path.isdir(folder_path):
         return [], "Dossier invalide ou introuvable."
-    paths = sorted(
-        str(p) for p in Path(folder_path).iterdir() if p.suffix.lower() in IMAGE_EXTS
-    )
+    paths = sorted(str(p) for p in Path(folder_path).iterdir() if p.suffix.lower() in IMAGE_EXTS)
     return paths, f"📁 {len(paths)} image(s) trouvée(s)"
 
 
@@ -493,7 +491,7 @@ def toggle_input_mode(mode):
 
 
 def update_ui_visibility(analysis_mode, timelapse_model):
-    if analysis_mode == "Détection automatique (piège photo)":
+    if analysis_mode == "auto":
         return (
             gr.update(visible=False),
             gr.update(value=MODEL_INFO["YOLOv8_Squelette"], visible=True),
@@ -564,17 +562,17 @@ with gr.Blocks(title=config.ui.title) as demo:
             gr.Markdown("<div class='section-title'>2. Paramètres de l'IA</div>")
             with gr.Group():
                 analysis_type = gr.Radio(
-                    choices=["Timelapse", "Détection automatique (piège photo)"],
-                    value="Timelapse",
+                    choices=[("Timelapse", "timelapse"), ("Détection automatique", "auto")],
+                    value="timelapse",
                     label="Type de données à analyser",
                 )
-                
+
                 targets_input = gr.CheckboxGroup(
                     choices=config.features.classes,
                     value=config.features.classes,
                     label="Cibles à rechercher",
                 )
-                
+
                 model_input = gr.Radio(
                     choices=["YOLO", "SAM3"],
                     value="YOLO",
@@ -641,12 +639,14 @@ with gr.Blocks(title=config.ui.title) as demo:
                 visu_image = gr.Image(
                     label="Visualisation de la détection", type="numpy", interactive=False
                 )
-            
+
             with gr.Group():
-                csv_output = gr.File(label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)")
+                csv_output = gr.File(
+                    label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)"
+                )
 
     # ── Wiring des événements ──────────────────────────────────────────────────
-    
+
     _visibility_outputs = [
         model_input,
         model_info,
