@@ -2,7 +2,7 @@
 Transforme une liste de Detection en fichier CSV via pandas.
 
 Format : 1 ligne par image.
-Colonnes fixes : image_name, bbox_baigneur, count_baigneur,
+Colonnes fixes : image_name, date, bbox_baigneur, count_baigneur,
                  bbox_tente, count_tente, bbox_prompt, count_prompt,
                  year, month, day, hour
 """
@@ -14,6 +14,7 @@ from models.base import Detection
 
 FIXED_COLUMNS = [
     "image_name",
+    "date",  
     "bbox_baigneur",
     "count_baigneur",
     "bbox_tente",
@@ -57,6 +58,7 @@ def export_to_csv(
         rows.append(
             {
                 "image_name": name,
+                "date": dt.strftime("%Y-%m-%d") if dt else "",  
                 "bbox_baigneur": baigneur_bboxes if baigneur_bboxes else "",
                 "count_baigneur": len(baigneur_bboxes),
                 "bbox_tente": tente_bboxes if tente_bboxes else "",
