@@ -1,0 +1,48 @@
+#model-info {
+    background-color: #f0f2f6;
+    border-left: 4px solid {{ config.ui.theme_color }};
+    padding: 15px;
+    border-radius: 8px; 
+}
+#tiling-info { 
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 12px;
+    border-radius: 8px;
+    color: #92400e;
+    font-size: 0.9em;
+}
+#file-upload .file-preview-holder { 
+    display: none !important; 
+}
+#file-upload .upload-container { 
+    height: 120px !important;
+    min-height: unset !important;
+    padding: 10px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#run-btn {
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+#folder-input-info {
+    background-color: #f0f7ff;
+    border-left: 4px solid #3b82f6;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #1e40af;
+    font-size: 0.85em;
+    margin-top: 4px;
+}
+.section-title {
+    color: {{ config.ui.theme_color }};
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #e2e4e7;
+    padding-bottom: 5px;
+}

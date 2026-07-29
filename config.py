@@ -1,6 +1,11 @@
+import os
+from pathlib import Path
+
 from marshmallow import Schema, ValidationError, fields
 from marshmallow.fields import Field
 import yaml
+
+from src.constant import ABS_DIR
 
 
 class PathField(Field):
@@ -109,13 +114,15 @@ class ConfigNamespace(dict):
 
 class Config(dict):
 
-    def __init__(self, config_file="config.yaml"):
+    def __init__(self, config_file=f"config.yaml"):
         self.config_file = config_file
         self.load_config()
 
     def load_config(self):
         try:
-            with open(self.config_file, "r", encoding="utf-8") as f:
+            from src.constant import ABS_DIR
+
+            with open(Path(ABS_DIR, self.config_file), "r", encoding="utf-8") as f:
                 config_data = yaml.safe_load(f)
                 config_validated = ConfigSchema().load(config_data)
                 self.update(config_validated)
@@ -132,3 +139,9 @@ class Config(dict):
             raise ValueError(
                 f"Erreur de validation dans le fichier de configuration '{self.config_file}': {e.messages}"
             )
+
+
+CONFIG_PATH = os.environ.get("BIODIV_APP_CONFIG", os.path.join(ABS_DIR, "config.yaml"))
+config = Config(
+    CONFIG_PATH
+)  # Instance globale de configuration accessible depuis d'autres modules
