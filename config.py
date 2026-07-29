@@ -39,6 +39,7 @@ class UISchema(Schema):
     page_threshold = fields.Int(required=False, load_default=100)
     show_visualization = fields.Bool(required=False, load_default=True)
     logos = fields.Nested(LogosSchema, required=False, load_default=dict)
+    use_local_storage = fields.Bool(required=False, load_default=False)
 
 
 class DefaultConfidenceSchema(Schema):

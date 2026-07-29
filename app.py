@@ -192,7 +192,7 @@ def _resolve_image_paths(files, input_mode, folder_path) -> tuple[list[str], str
     Retourne (image_paths, error_message).
     Gère les deux modes d'import : upload Gradio et dossier local.
     """
-    if input_mode == "Dossier local":
+    if input_mode == "folder":
         if not folder_path or not os.path.isdir(folder_path):
             return [], "Dossier introuvable ou invalide."
         paths = sorted(
@@ -482,7 +482,7 @@ def on_folder_change(folder_path):
 
 
 def toggle_input_mode(mode):
-    is_upload = mode == "Upload fichiers"
+    is_upload = mode == "upload"
     return (
         gr.update(visible=is_upload),
         gr.update(visible=not is_upload),
@@ -530,8 +530,12 @@ with gr.Blocks(title=config.ui.title) as demo:
             gr.Markdown("<div class='section-title'>1. Mode d'import des images</div>")
             with gr.Group():
                 input_mode = gr.Radio(
-                    choices=["Upload fichiers", "Dossier local"],
-                    value="Upload fichiers",
+                    choices=(
+                        [("Upload fichiers", "upload"), ("Dossier local", "folder")]
+                        if config.ui.use_local_storage
+                        else [("Upload fichiers", "upload")]
+                    ),
+                    value="upload",
                     label="Source des images",
                 )
                 images_input = gr.File(
@@ -547,7 +551,7 @@ with gr.Blocks(title=config.ui.title) as demo:
                     visible=False,
                 )
                 folder_info = gr.Markdown(
-                    value=" Les images sont lues directement depuis le disque, sans copie.",
+                    value="Les images sont lues directement depuis le disque, sans copie.",
                     elem_id="folder-input-info",
                     visible=False,
                 )
@@ -623,7 +627,7 @@ with gr.Blocks(title=config.ui.title) as demo:
             with gr.Group():
                 day_selector = gr.Dropdown(label=" Filtrer par date", choices=[], visible=False)
                 selector_table = gr.Dataframe(
-                    label=" Tableau des résultats — Cliquez sur une ligne pour visualiser",
+                    label="Tableau des résultats — Cliquez sur une ligne pour visualiser",
                     interactive=False,
                     wrap=True,
                     row_count=10,
