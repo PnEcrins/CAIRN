@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/add-jupyterlite
   pull_request:
     branches:
       - "*"
