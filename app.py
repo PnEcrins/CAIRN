@@ -573,8 +573,8 @@ with gr.Blocks(title=config.ui.title) as demo:
                     label="Cibles à rechercher",
                 )
                 model_input = gr.Radio(
-                    choices=["YOLO", "SAM3"],
-                    value="YOLO",
+                    choices=config.models.available,
+                    value=config.models.available[0] if config.models.available else "YOLO",
                     label="Modèle",
                 )
                 model_info = gr.Markdown(value="", elem_id="model-info", visible=False)

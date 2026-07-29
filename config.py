@@ -47,7 +47,7 @@ class DefaultConfidenceSchema(Schema):
 
 
 class ModelsSchema(Schema):
-    available = fields.List(fields.Str(), required=False, load_default=list)
+    available = fields.List(fields.Str(), required=False, load_default=["YOLO"])
     device = fields.Str(required=False, load_default="cpu")
     default_confidence = fields.Nested(
         DefaultConfidenceSchema,
