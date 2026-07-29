@@ -644,11 +644,6 @@ with gr.Blocks(title=config.ui.title) as demo:
                     label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)"
                 )
 
-            with gr.Group():
-                csv_output = gr.File(
-                    label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)"
-                )
-
     # ── Wiring des événements ──────────────────────────────────────────────────
     _visibility_outputs = [
         model_input,
