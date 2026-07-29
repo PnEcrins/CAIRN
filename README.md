@@ -159,25 +159,22 @@ Définit les options de traitement et la localisation des fichiers de poids.
 Paramètres liés à un autre projet : voir [le dépôt Git](https://github.com/Attendance-PNE-OFB/yolov8-attendance/blob/main/README-FR.md)
 
 
-##  Benchmark
+## Benchmark
 
-Performances indicatives (validation interne, jeu de données aérien/drone
-des lacs de montagne — Anterne, Lauvitel, Muzelle, Pormenaz, Lauzon,
-Brevent, Cornu, Jovet) :
+Performances indicatives (validation interne, jeu de données sur des timelapses des lacs de montagne — Anterne, Lauvitel, Muzelle, Pormenaz, Lauzon, Brevent, Cornu, Jovet) :
 
 | Modèle | Mode | mAP50 | Seuil conseillé |
-|---|---|---|---|---|
-| YOLO |Sans tiling | 0.5 |  0.3 |
+| --- | --- | --- | --- |
+| YOLO | Sans tiling | 0.50 | 0.3 |
 | YOLO | Avec tiling | 0.85 | 0.3 |
-| SAM3 | Sans tiling | 0.4 |  0.6 |
-| SAM3 | Avec tiling| 0.5 |  0.5 |
+| SAM3 | Sans tiling | 0.40 | 0.6 |
+| SAM3 | Avec tiling | 0.50 | 0.5 |
 
-> Ces chiffres sont indicatifs et dépendent fortement du jeu de données
-> d'évaluation, des conditions de prise de vue (altitude, luminosité,
-> résolution) et de l'activation ou non du tiling.
+> Ces chiffres sont indicatifs et dépendent fortement du jeu de données d'évaluation, des conditions de prise de vue (altitude, luminosité, résolution) et de l'activation ou non du tiling.
 
-Au global, il est recommandé d'utiliser le modèle YOLO26 fine-tuné, beaucoup plus rapide en inférence que SAM3, mais aussi plus précis. 
-On obtient de très bons résultats, notamment sur la détection de la classe "tente", beaucoup moins sur la classe "baigneur", faute de suffisamment de données d'entraînement. 
+Au global, il est recommandé d'utiliser le modèle **YOLO26 fine-tuné**, beaucoup plus rapide en inférence que SAM3, mais aussi plus précis. 
+
+On obtient de très bons résultats, notamment sur la détection de la classe « tente », beaucoup moins sur la classe « baigneur », faute de suffisamment de données d'entraînement.
 
 ##  Crédits
 
