@@ -12,7 +12,7 @@ Application web locale permettant d'analyser des images de timelapse ou de pièg
 4. [Lancer et annuler l'analyse](#4-lancer-et-annuler-lanalyse)
 5. [Résultats et visualisation](#5-résultats-et-visualisation)
 6. [Export CSV](#6-export-csv)
-7. [Configuration avancée](#7-configuration-avancée)
+7. [Meilleure façon de faire](#7-meilleure-façon-de-faire)
 
 
 
@@ -36,6 +36,8 @@ L'interface est divisée en deux colonnes :
 Cliquez sur la zone d'import pour sélectionner une ou plusieurs images depuis votre ordinateur (formats acceptés : `.jpg`, `.jpeg`, `.png`, `.tif`, `.tiff`, `.bmp`).  
 Un compteur confirme le nombre d'images chargées.
 
+**Attention** : si l'on importe de nombreuses images, il se peut que l'interface mette du temps à réagir avant d'afficher "Importation de x images". Ne toucher à rien et attendre (le temps d'import est généralement de 2 min pour 1000 images selon la connexion)
+
 ### Mode « Dossier local »
 
 Saisissez le chemin absolu d'un dossier contenant vos images (ex. `/home/user/mes_photos`).  
@@ -51,8 +53,8 @@ Les images sont lues directement depuis le disque, sans copie.
 
 | Option | Description |
 |---|---|
-| **Analyse Timelapse** | Détection de tentes et baigneurs sur des photos de lac prises par timelapse. |
-| **Analyse Piège Photos Randonneurs** | Comptage et classification de randonneurs sur des photos de pièges photographiques. Requiert des poids de modèle spécifiques. |
+| **Timelapse** | Détection de tentes et baigneurs sur des photos prises par timelapse. |
+| **Détection automatique** | Comptage et classification de randonneurs sur des photos de pièges photographiques se déclenchant automatiquement à leur passage.|
 
 ---
 
@@ -62,13 +64,13 @@ Les images sont lues directement depuis le disque, sans copie.
 
 Modèle léger et rapide, entraîné sur 3 000 images de lacs de montagne.  
 Optimisé pour la détection de tentes prises de loin.  
-**Seuil conseillé : 0,4**
+**Seuil conseillé : 0,3**
 
 #### SAM3
 
 Modèle polyvalent capable de détecter n'importe quelle catégorie via un **prompt libre**.  
 ⚠️ Très gourmand en ressources — un GPU est fortement recommandé (plusieurs dizaines de secondes par image en CPU).  
-**Seuil conseillé : 0,4**
+**Seuil conseillé : 0,6**
 
 ---
 
@@ -76,8 +78,8 @@ Modèle polyvalent capable de détecter n'importe quelle catégorie via un **pro
 
 Cochez les catégories à détecter :
 
-- **Baigneur** — personnes se baignant
-- **Tente** — tentes installées au bord du lac
+- **Baigneur** 
+- **Tente** 
 
 Plusieurs cibles peuvent être sélectionnées simultanément.
 
@@ -95,8 +97,7 @@ Un seuil élevé n'affiche que les détections les plus certaines.
 ### Tiling (petits objets)
 
 Option permettant de découper l'image en tuiles avant analyse, améliorant la détection des objets éloignés ou de petite taille.  
-**Fortement recommandé** pour les vues de lac avec des sujets lointains.
-
+**Fortement recommandé** 
 ---
 
 ## 4. Lancer et annuler l'analyse
@@ -106,8 +107,11 @@ Option permettant de découper l'image en tuiles avant analyse, améliorant la d
 | **Lancer l'analyse** | Démarre le traitement de toutes les images sélectionnées. |
 | **Annuler** | Interrompt l'analyse en cours. |
 
-La barre de statut sous les boutons indique la progression et le résumé final (nombre d'images traitées, nombre d'objets détectés).
+La barre de statut sous les boutons indique une progression estimée (rarement juste) et le résumé final (nombre d'images traitées, nombre d'objets détectés).
 
+Le temps de traitement peut-être très long, surtout en mode tiling. Pour des batchs de plusieurs centaines d'images il est conseillé de lancer l'opération le soir et de récupérer les résultats le lendemain matin.
+
+Si le temps de traitement vous paraît extrêmement long, il est probable que d'autres personnes aient lancé des requêtes avant vous. Patience...
 ---
 
 ## 5. Résultats et visualisation
@@ -136,7 +140,7 @@ Un fichier CSV est généré automatiquement à la fin de chaque analyse. Clique
 | Colonne | Description |
 |---|---|
 | `image_name` | Nom du fichier image |
-| `datetime` | Date et heure extraites des métadonnées EXIF |
+| `date` | Date et heure extraites des métadonnées EXIF |
 | `year` / `month` / `day` / `hour` | Composantes temporelles |
 | `count_baigneur` | Nombre de baigneurs détectés |
 | `bbox_baigneur` | Coordonnées des boîtes englobantes (baigneurs) |
@@ -153,3 +157,7 @@ Le CSV produit par l'analyse piège photos reprend le format natif du script `of
 
 
 ```
+## 7. Meilleure façon de faire
+
+Lorsque l'on souhaite analyser une large quantité de donnée (par exemple les timelapses capturés au long d'une saison) il est préférable de commencer par uploader quelques images contenant des tentes ou baigneurs à détecter. Comme ça l'analyse par l'application web sera rapide et on aura rapidement une idée des résultats que l'on pourra attendre en utilisant le module visualisation. 
+Si les performances conviennent on peut ensuite upload l'intégralité des images (limite de 1 Go) et lancer l'analyse (le soir pour que ça travaille la nuit). 

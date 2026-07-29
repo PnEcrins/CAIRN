@@ -14,14 +14,20 @@ de vision par ordinateur (YOLO, SAM3).
 ![Interface CAIRN](docs/images/screenshot_app.png)
 
 L'interface permet de :
-- 📥 **Importer** un lot d'images à analyser
-- 🤖 **Choisir** un modèle de détection (YOLO ou SAM3)
-- ✅ **Sélectionner** les classes à détecter (tente ou baigneur pour YOLO, prompt libre pour SAM3)
-- ⚙️ **Ajuster** les paramètres du modèle (seuil de confiance et tiling optionnel)
-- ▶️ **Lancer** l'analyse et consulter les résultats dans un tableau détaillé par image
-- 👁️ **Visualiser** les détections (bounding boxes) directement sur les images
-- 📤 **Exporter** l'ensemble des résultats au format CSV
+- **Importer** un lot d'images à analyser
+- **Choisir** d'analyser des images timelapses ou des détections automatiques (typiquement faite par des pièges photos). Cette dernière catégorie profite de l'ajout d'un projet antérieur : [OFB-Attendance](https://github.com/Attendance-PNE-OFB/yolov8-attendance)
 
+Pour analyser des timelapses (cœur de l'application):
+
+- **Choisir** un modèle de détection (YOLO ou SAM3)
+- **Sélectionner** les classes à détecter (tente ou baigneur pour YOLO, prompt libre pour SAM3)
+- **Ajuster** les paramètres du modèle (seuil de confiance et tiling optionnel)
+- **Lancer** l'analyse et consulter les résultats dans un tableau détaillé par image
+- **Visualiser** les détections (bounding boxes) directement sur les images
+- **Exporter** l'ensemble des résultats au format CSV
+
+
+Des images illustrant les capacités de détection du modèle sont proposées ici [`docs/images/exemples`](docs/images/exemples).
 
 ➡️ Documentation utilisateur complète : voir
 [`docs/guide_utilisateur.md`](docs/guide_utilisateur.md).
@@ -87,7 +93,7 @@ docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml --name cairn ghcr.io/
 
 
 
-## 🧠 Modèles disponibles
+##  Modèles disponibles
 
 | Modèle | Description | Source / article | Téléchargement des poids |
 |---|---|---|---|
@@ -113,40 +119,67 @@ SAM3 est un modèle propriétaire (licence non commerciale) et n'est pas inclus 
 docker run -d -p 80:7860 -v ./config.yaml:/app/config.yaml -v ./model_weights/sam3.pt:/app/model_weights/sam3.pt --name cairn ghcr.io/pnecrins/cairn:latest
 ``` 
 
-## 🎨 Paramètres
+## Configuration
 
-L'apparence de l'application (logos, couleurs, thème, seuils par défaut)
-est centralisée en tête de `CAIRN/app.py`.
+L'application se configure via le fichier de configuration `config.yaml.sample`. Les paramètres sont répartis en plusieurs sections :
 
-| Élément | Valeur |
-|---|---|
-| Couleur baigneur | 🔴 `(239, 51, 64)` |
-| Couleur tente | 🟢 `(0, 122, 94)` |
-| Couleur prompt libre | 🟠 `(244, 162, 97)` |
-| Couleur principale (thème) | `#981d97` (magenta PNE) |
-| Police | Inter |
-| Seuil de confiance par défaut | `0.4` |
-| Seuil de pagination par jour | `100` images |
+### Interface utilisateur (`ui`)
+Règle l'apparence et l'affichage de l'application.
+
+| Paramètre | Type | Valeur par défaut / Exemple | Description |
+| :--- | :--- | :--- | :--- |
+| `title` | Chaîne | `"CAIRN"` | Titre principal de l'application |
+| `subtitle` | Chaîne | `"CAractérisation par..."` | Sous-titre explicatif |
+| `theme_color` | Code hex | `"#981d97"` | Couleur principale du thème graphique |
+| `page_threshold` | Entier | `100` | Seuil d'éléments affichés par page |
+| `show_visualization` | Booleen | `true` | Affiche (`true`) ou masque (`false`) le panneau latéral droit (résultats et visuels) |
+| `logos` | Dictionnaire | *(chemins d'images)* | Empacements des logos (`top_left_1`, `top_left_2`, `top_right_1`, `top_right_2`) |
+
+### Modèles d'IA (`models`)
+Gère les modèles disponibles et le matériel d'exécution.
+
+| Paramètre | Type | Valeur par défaut / Exemple | Description |
+| :--- | :--- | :--- | :--- |
+| `available` | Liste | `[YOLO, SAM3]` | Liste des modèles sélectionnables dans l'application |
+| `device` | Chaîne | `"cpu"` | Matériel d'exécution (`"cpu"` pour le processeur ou `"cuda"` pour le GPU) |
+| `default_confidence` | Dictionnaire | `YOLO: 0.3`, `SAM3: 0.6` | Seuil de confiance par défaut pour chaque modèle |
+| `show_confidence_slider` | Booleen | `true` | Affiche ou masque le curseur de réglage du seuil de confiance dans l'interface |
+| `confidence_range` | Liste `[min, max]` | `[0.1, 0.9]` | Bornes minimale et maximale pour le curseur de confiance |
+
+### Fonctionnalités & Poids (`features`)
+Définit les options de traitement et la localisation des fichiers de poids.
+
+| Paramètre | Type | Valeur par défaut / Exemple | Description |
+| :--- | :--- | :--- | :--- |
+| `allow_tiling` | Booleen | `true` | Autorise ou masque l'option de *tiling* (découpage d'image) |
+| `classes` | Liste | `[tente, baigneur]` | Classes d'objets à détecter |
+| `model_path` | Dictionnaire | *(chemins .pt)* | Chemin vers les fichiers de poids local pour chaque modèle (`YOLO`, `SAM3`) |
+
+### Fréquentation OFB (`ofb_attendance`)
+Paramètres liés à un autre projet : voir [le dépôt Git](https://github.com/Attendance-PNE-OFB/yolov8-attendance/blob/main/README-FR.md)
 
 
-## 📊 Benchmark
+##  Benchmark
 
 Performances indicatives (validation interne, jeu de données aérien/drone
 des lacs de montagne — Anterne, Lauvitel, Muzelle, Pormenaz, Lauzon,
 Brevent, Cornu, Jovet) :
 
-| Modèle | Classe | mAP50 | mAP50-95 | Seuil conseillé |
+| Modèle | Mode | mAP50 | Seuil conseillé |
 |---|---|---|---|---|
-| YOLO |`baigneur` | 0.85 | 0.65 | 0.4 |
-| YOLO | `tente` | 0.85 | 0.65 | 0.4 |
-| SAM3 | `baigneur` | 0.80 | — | 0.4 |
-| SAM3 | `tente` | 0.75 | — | 0.4 |
+| YOLO |Sans tiling | 0.5 |  0.3 |
+| YOLO | Avec tiling | 0.85 | 0.3 |
+| SAM3 | Sans tiling | 0.4 |  0.6 |
+| SAM3 | Avec tiling| 0.5 |  0.5 |
 
 > Ces chiffres sont indicatifs et dépendent fortement du jeu de données
 > d'évaluation, des conditions de prise de vue (altitude, luminosité,
 > résolution) et de l'activation ou non du tiling.
 
-## 🙏 Crédits
+Au global, il est recommandé d'utiliser le modèle YOLO26 fine-tuné, beaucoup plus rapide en inférence que SAM3, mais aussi plus précis. 
+On obtient de très bons résultats, notamment sur la détection de la classe "tente", beaucoup moins sur la classe "baigneur", faute de suffisamment de données d'entraînement. 
+
+##  Crédits
 
 - **Parc national des Écrins** — pilotage du projet, terrain, charte
   graphique.
@@ -154,11 +187,11 @@ Brevent, Cornu, Jovet) :
 - **Projets PLOUF & BiodivTourAlps** — financement et cadre des travaux de
   suivi de la fréquentation.
 
-## 📄 Licence
+##  Licence
 
 Ce projet est distribué sous licence **AGPL-3.0** — voir [`LICENSE`](LICENSE).
 
-## 📚 Documentation complète
+##  Documentation complète
 
 Toute la documentation utilisateur est disponible dans le dossier
 [`docs/`](docs/) :
