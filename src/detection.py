@@ -143,9 +143,9 @@ def run_detection(
                     model_google=model_google,
                     model_pose=model_pose,
                     classfication_date_file=os.path.join(ABS_DIR, "last_classification_date.txt"),
-                    classes_path=os.path.join(ABS_DIR, "ofb_attendance", "classes.json"),
+                    classes_path=os.path.join(ABS_DIR, "src", "ofb_attendance", "classes.json"),
                     classes_exception_path=os.path.join(
-                        ABS_DIR, "ofb_attendance", "classes_exeptions_rules.json"
+                        ABS_DIR, "src", "ofb_attendance", "classes_exeptions_rules.json"
                     ),
                     blur=False,
                     conf_google=conf,
