@@ -6,12 +6,12 @@ Created on Wed Jan 31 13:34:10 2024
 """
 
 # Si 1 left et 1 verticale alors prendre l'avis de la tete
-from functions import GetImage, PathManagement
-from Directions import GetDirection
-from DataManagment import GetCsvDatas, PathLeaf
-from Prediction import PositionImages
+from src.ofb_attendance.functions import GetImage, PathManagement
+from src.ofb_attendance.Directions import GetDirection
+from src.ofb_attendance.DataManagment import GetCsvDatas, PathLeaf
+from src.ofb_attendance.Prediction import PositionImages
 from PIL import Image
-from extractMetadata import extract_metadata, dictionary_to_json
+from src.ofb_attendance.extractMetadata import extract_metadata, dictionary_to_json
 import json
 from PIL import Image, ExifTags
 

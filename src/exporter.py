@@ -10,11 +10,11 @@ Colonnes fixes : image_name, date, bbox_baigneur, count_baigneur,
 import tempfile
 from pathlib import Path
 import pandas as pd
-from models.base import Detection
+from src.models.base import Detection
 
 FIXED_COLUMNS = [
     "image_name",
-    "date",  
+    "date",
     "bbox_baigneur",
     "count_baigneur",
     "bbox_tente",
@@ -58,7 +58,7 @@ def export_to_csv(
         rows.append(
             {
                 "image_name": name,
-                "date": dt.strftime("%Y-%m-%d") if dt else "",  
+                "date": dt.strftime("%Y-%m-%d") if dt else "",
                 "bbox_baigneur": baigneur_bboxes if baigneur_bboxes else "",
                 "count_baigneur": len(baigneur_bboxes),
                 "bbox_tente": tente_bboxes if tente_bboxes else "",

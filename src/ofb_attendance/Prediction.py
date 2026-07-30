@@ -6,7 +6,7 @@ Created on Fri Feb  2 10:59:44 2024
 """
 
 from ultralytics import YOLO
-from DataManagment import SaveResults
+from src.ofb_attendance.DataManagment import SaveResults
 
 
 def PositionImages(

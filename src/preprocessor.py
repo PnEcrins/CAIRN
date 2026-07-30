@@ -1,18 +1,7 @@
-"""
-Lit les EXIF d'une image et renvoie le nom final du fichier.
-Si pas d'EXIF (ou EXIF illisibles) → nom générique.
-"""
-
-import re
 from pathlib import Path
 from datetime import datetime
-
-try:
-    from PIL import Image
-    from PIL.ExifTags import TAGS
-except ImportError:
-    raise ImportError("Installe Pillow : pip install Pillow")
-
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 GENERIC_PREFIX = "image_sans_date"
 
