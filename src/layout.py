@@ -1,12 +1,13 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 import gradio as gr
 import pandas as pd
 
 from src.constant import MODEL_INFO, IMAGE_EXTS
 from src.detection import run_detection
 from src.utils import _default_conf_for, _get_day_df, on_image_select
-from config import config
+from src.config import config
 
 
 # ── Callbacks UI ───────────────────────────────────────────────────────────────
@@ -32,6 +33,34 @@ def toggle_input_mode(mode):
 
 
 def update_ui_visibility(analysis_mode, timelapse_model):
+    """Update visibility/value of the widgets bound to ``_visibility_outputs``.
+
+    Parameters
+    ----------
+    analysis_mode : str
+        Value of ``analysis_type`` radio, either ``"auto"`` or ``"timelapse"``.
+    timelapse_model : str
+        Value of ``model_input``, e.g. ``"SAM3"``.
+
+    Returns
+    -------
+    tuple of gradio.update
+        7 updates, positionally matching ``_visibility_outputs``:
+
+        0. ``model_input`` (Radio) -- visibility only.
+        1. ``model_info`` (Markdown) -- ``value`` set to the model description
+           from ``MODEL_INFO``; visibility only otherwise.
+        2. ``targets_input`` (CheckboxGroup) -- visibility only.
+        3. ``free_prompt_input`` (Textbox) -- visibility only (shown when
+           ``timelapse_model == "SAM3"``).
+        4. ``conf_slider`` (Slider) -- ``value`` set via
+           ``_default_conf_for(timelapse_model)``; visibility gated by
+           ``config.models.show_confidence_slider``.
+        5. ``tiling_group`` (Group) -- visibility gated by
+           ``config.features.allow_tiling``.
+        6. ``right_side`` (Column) -- visibility gated by
+           ``config.ui.show_visualization``.
+    """
     if analysis_mode == "auto":
         return (
             gr.update(visible=False),
@@ -63,6 +92,7 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
     path_registry_state = gr.State({})
     last_df_state = gr.State(pd.DataFrame())
     active_columns_state = gr.State(["image_name"])
+
     gr.HTML(HEADER_HTML)
 
     with gr.Row():

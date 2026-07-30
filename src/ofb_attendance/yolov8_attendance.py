@@ -17,12 +17,12 @@ from ultralytics import YOLO
 import numpy as np
 import re
 import csv
-from functions import IsImage
-from DataManagment import DefSkelPoints
-from extractMetadata import extract_metadata
-from Directions import GetDirection
+from src.ofb_attendance.functions import IsImage
+from src.ofb_attendance.DataManagment import DefSkelPoints
+from src.ofb_attendance.extractMetadata import extract_metadata
+from src.ofb_attendance.Directions import GetDirection
 from math import ceil
-from BlurImageFromPrediction import blur_Image_and_Replace
+from src.ofb_attendance.BlurImageFromPrediction import blur_Image_and_Replace
 
 import yaml
 

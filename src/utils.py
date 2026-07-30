@@ -1,7 +1,6 @@
-# ── Gestion des Logos ──────────────────────────────────────────────────────────
 import ast
-import gc
 import os
+import warnings
 from pathlib import Path
 
 import base64
@@ -10,7 +9,7 @@ import cv2
 import pandas as pd
 
 
-from config import config
+from src.config import config
 from src.constant import (
     ABS_DIR,
     COLORS,
@@ -20,13 +19,16 @@ from src.constant import (
 import gradio as gr
 
 
-def _logo_b64(path):
+def to_b64(path):
     if not path or not os.path.exists(path):
         return ""
     try:
         with open(path, "rb") as f:
             return "data:image/png;base64," + base64.b64encode(f.read()).decode()
     except Exception:
+        warnings.warn(
+            f"Impossible de convertir le fichier en base64 : {path}. Une image vide sera utilisée à la place."
+        )
         return ""
 
 

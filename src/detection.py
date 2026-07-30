@@ -20,11 +20,11 @@ import pandas as pd
 import tempfile
 import csv
 
-from preprocessor import preprocess_images
-from models.yolo import YoloModel
-from models.sam3 import SAM3Model
-from exporter import export_to_csv
-from config import config
+from src.models.yolo import YoloModel
+from src.models.sam3 import SAM3Model
+from src.exporter import export_to_csv
+from src.preprocessor import preprocess_images
+from src.config import config
 
 # ── Importation sécurisée du script OFB ───────────────────────────────────────
 HAS_OFB_SCRIPT = False
@@ -42,7 +42,7 @@ if ABS_DIR not in sys.path:
     sys.path.insert(0, ABS_DIR)
 
 try:
-    from ofb_attendance.yolov8_attendance import (
+    from src.ofb_attendance.yolov8_attendance import (
         classification as classification_ofb,
         sequence_image,
         gathering_time,

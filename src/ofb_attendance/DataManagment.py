@@ -7,7 +7,7 @@ Created on Fri Feb  2 10:56:49 2024
 
 import csv
 import os
-from functions import GetKeypoint, PathManagement
+from src.ofb_attendance.functions import GetKeypoint, PathManagement
 from PIL import Image
 import exiftool
 import ntpath
