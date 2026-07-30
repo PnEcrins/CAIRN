@@ -193,6 +193,9 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
                     placeholder="Statut...",
                 )
 
+            with gr.Group():
+                csv_output = gr.File(label="Rapport CSV généré (cliquez pour télécharger)")
+
         # ── Colonne droite : visualisation ─────────────────────────────────────
         with gr.Column(scale=2, visible=config.ui.show_visualization) as right_side:
             with gr.Group():
@@ -214,10 +217,6 @@ def get_layout(config, HEADER_HTML, gradio_context_variable):
                     label="Visualisation de la détection", type="numpy", interactive=False
                 )
 
-            with gr.Group():
-                csv_output = gr.File(
-                    label="Rapport CSV généré (à télécharger en bas à droite de ce cadre)"
-                )
         # ── Wiring des événements ──────────────────────────────────────────────────
         _visibility_outputs = [
             model_input,
