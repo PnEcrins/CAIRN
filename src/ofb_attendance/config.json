@@ -1,0 +1,18 @@
+{
+    "ftp_server": "",
+    "ftp_username": "username",
+    "ftp_port": 21,
+    "ftp_password": "mdp",
+    "ftp_directory": "/images_folder",
+    "local_folder": "/home/lweksteen/test",
+    "output_folder": "/home/lweksteen/test/output",
+    "model_name_pose": "yolov8m-pose.pt",
+    "treshold_pose": 0.3,
+    "model_name_google": "yolov8m-oiv7.pt",
+    "treshold_google": 0.1,
+    "image_or_time_csv": "time",
+    "sequence_duration": 10,
+    "time_step": "h",
+    "output_format": "csv",
+    "blur": true
+}

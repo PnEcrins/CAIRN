@@ -3,7 +3,7 @@ name = "CAIRN"
 version = "0.0.1"
 license = { text = "MIT" }
 dependencies = [
-    "gradio>=4.0.0",
+    "gradio>=6.21",
     "opencv-python-headless>=4.8.0",
     "pandas>=2.0.0",
     "Pillow>=10.0.0",
@@ -26,3 +26,8 @@ version = { file = ["VERSION"] }
 
 [tool.black]
 line-length = 99
+
+[dependency-groups]
+dev = [
+    "isort>=8.0.1",
+]
