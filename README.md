@@ -176,6 +176,12 @@ Au global, il est recommandé d'utiliser le modèle **YOLO26 fine-tuné**, beauc
 
 On obtient de très bons résultats, notamment sur la détection de la classe « tente », beaucoup moins sur la classe « baigneur », faute de suffisamment de données d'entraînement.
 
+## Cas d'étude
+
+Une fois les détections faites par l'application CAIRN, on peut analyser les données issues du CSV généré, à l'aide de Jupyter Notebooks créés pour faire l'analyse de jeux de données des caméras timelapses installées en 2025 sur le teritoire du Parc national des Ecrins. Il faut se rendre sur cette adresse : [Jupyter Lab](https://pnecrins.github.io/CAIRN)
+
+
+
 ##  Crédits
 
 - **Parc national des Écrins** — pilotage du projet, terrain, charte
